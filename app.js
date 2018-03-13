@@ -1,7 +1,7 @@
-// author: Nikola Jovanovic
+// author: Nikola Jovanovic (NikolaJov96)
 
 // listener processing http get requests
-var httpListener = require('./server/httpServer/httpServer.js')(__dirname);
+require('./server/httpServer/httpServer.js')(__dirname);
 
 // listener processing socket.io requests 
-var socketsListener = require('./server/socketsServer/socketsServer.js');
+require('./server/socketsServer/socketsServer.js');

@@ -1,7 +1,10 @@
-// author: Nikola Jovanovic
+// author: Nikola Jovanovic (NikolaJov96)
 
 var express = require('express');
 var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var HTTP_PORT = 8000;
 
 // list of expected get request URLs and response files
 var requests = require('./definedRequests.js');
@@ -20,9 +23,9 @@ httpListener = function(path){
 	app.use(express.static(path + '/client'));
 
 	// listen on a port
-	app.listen(8000);
+	http.listen(HTTP_PORT);
 
-	console.log('HTTP get request listener set up.');
+	console.log('HTTP server listetning on port: ' + HTTP_PORT + '.');
 }
 
 module.exports = httpListener;

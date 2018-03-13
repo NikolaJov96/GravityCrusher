@@ -1,4 +1,4 @@
-// author: Nikola Jovanovic
+// author: Nikola Jovanovic (NikolaJov96)
 
 // list of expected get request URLs and response files
 requests = [
