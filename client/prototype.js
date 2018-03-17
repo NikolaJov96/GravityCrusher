@@ -8,6 +8,7 @@ var player = -1;
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 ctx.font = '60px Arial';
+ctx.fillStyle = "#FFFFFF";
 
 // draw game state
 var draw = function(state){
