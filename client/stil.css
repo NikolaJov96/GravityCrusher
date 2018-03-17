@@ -1,0 +1,10 @@
+.jumbotron{
+	height: 92vh;
+	background-image: url("img/kosmos.jpg");
+}
+p{
+	color: white;
+}
+small{
+	font-color: white;
+}
