@@ -42,12 +42,16 @@ module.exports = function(gameRoom){
             hostActive: (self.room.host.page === 'Game' ? true : false),
             join: 'andrija',
             joinActive: (self.room.join.page === 'Game' ? true : false),
-            planets: [{400, 300, 20, 3}, {100, 500, 40, 2}, {700, 50, 10, 3}]
+            planets: [{x: 400, y: 300, radius: 20, id: 3}, {x: 100, y: 500, radius: 40, id: 2},
+                {x: 700, y: 50, radius: 10, id: 3}],
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
-            players: [{600, 500, (0 - 1) * Math.Pi / 4, 0, 2}, {200, 100, (0 - 1) * Math.Pi / 4, 0, 1}],
-            bullets: [{200, 300, 3 * Math.Pi / 4, 2}, {400, 300, Math.Pi / 2, 1}, {450, 500, Math.Pi / 2, 1},
-                {100, 200, Math.Pi / 4, 2}, {400, 300, 3 * Math.Pi / 4, 1}, {400, 300, 0, 2}]
+            players: [{x: 600, y: 500, tilt: (0 - 1) * Math.Pi / 4, roll: 0, health: 2},
+                        {x: 200, y: 100, tilt: (0 - 1) * Math.Pi / 4, roll: 0, health: 1}],
+            bullets: [{x: 200, y: 300, tilt: 3 * Math.Pi / 4, id: 2},
+                {x: 400, y: 300, tilt: Math.Pi / 2, id: 1}, {x: 450, y: 500, tilt: Math.Pi / 2, id: 1},
+                {x: 100, y: 200, tilt: Math.Pi / 4, id: 2}, {x: 400, y: 300, tilt: 3 * Math.Pi / 4, id: 1},
+                {x: 400, y: 300, tilt: 0, id: 2}]
         };
         if (user.name === self.room.hostName){
             ret.role = 'host';
@@ -112,9 +116,11 @@ module.exports = function(gameRoom){
         var gameState = {
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
-            players: [{500, 650, (0 - 1) * Math.Pi / 4, Math.Pi / 8, 2}, {200, 100, Math.Pi / 4, 0, 1}],
-            bullets: [{200, 300, 3 * Math.Pi / 4, 2}, {400, 300, Math.Pi / 2, 1}, {450, 500, Math.Pi / 2, 1},
-                {100, 200, Math.Pi / 4, 2}, {400, 300, 3 * Math.Pi / 4, 1}, {400, 300, 0, 2}]
+            players: [{x: 500, y: 650, tilt: (0 - 1) * Math.Pi / 4, roll: Math.Pi / 8, health: 2},
+                {x: 200, y: 100, tilt: Math.Pi / 4, roll: 0, health: 1}],
+            bullets: [{x: 200, y: 300, tilt: 3 * Math.Pi / 4, id: 2}, {x: 400, y: 300, tilt: Math.Pi / 2, id: 1},
+                {x: 450, y: 500, tilt: Math.Pi / 2, id: 1}, {x: 100, y: 200, tilt: Math.Pi / 4, id: 2},
+                {x: 400, y: 300, tilt: 3 * Math.Pi / 4, id: 1}, {x: 400, y: 300, tilt: 0, id: 2}]
         };
         if (self.room.host.socket && self.room.host.page === 'Game'){
             self.room.host.socket.emit('gameState', gameState);
