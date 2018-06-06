@@ -20,8 +20,10 @@ var preloadTextures = function(){
                               texParams.srcFormat, texParams.srcType, image);
                 gl.generateMipmap(gl.TEXTURE_2D);
                 loaded += 1;
-                if (loaded >= textureList.length) shapeTextures.allTexturesLoaded = true;
-                
+                if (loaded >= textureList.length){
+                    shapeTextures.allTexturesLoaded = true;
+                    overlay.classList.add('d-none'); 
+                }
             };
         }(i);
         image.src = 'app_scripts/game/res/' + textureList[i] + '.png';
@@ -30,4 +32,25 @@ var preloadTextures = function(){
 
 // list of existing textures, resource files are expected to have the same name and png extension
 shapeTextures.allTexturesLoaded = false;
-var textureList = [ 'ship', 'ship-r', 'ship-g', 'exhaust', 'star' ];
+var textureList = [ 
+    
+    'ship', 'ship-r', 'ship-g', 'exhaust', 'star',
+    
+    'missles/missle-blue', 'missles/missle-green',
+    'missles/missle-red', 'missles/missle-yellow',
+    
+    /*'backgrounds/background-1', 'backgrounds/background-2',
+    'backgrounds/background-3', 'backgrounds/background-4',*/
+    
+    'planets/planet-1', 'planets/planet-2', 'planets/planet-3', 'planets/planet-4',
+    'planets/planet-5', 'planets/planet-6', 'planets/planet-7', 'planets/planet-8',
+    'planets/planet-9', 'planets/planet-10', 'planets/planet-11', 'planets/planet-12',
+    'planets/planet-13', 'planets/planet-14', 'planets/planet-15', 'planets/planet-16',
+    
+    'ships/dark-blue-rocket', 'ships/dark-green-rocket', 'ships/dark-red-rocket', 'ships/dark-yellow-rocket',
+    'ships/blue-rocket', 'ships/green-rocket', 'ships/red-rocket', 'ships/yellow-rocket',
+
+    'stars/star-1-w', 'stars/star-2-w', 'stars/star-3-w',
+    'stars/star-1-y', 'stars/star-2-y', 'stars/star-3-y',
+    
+];

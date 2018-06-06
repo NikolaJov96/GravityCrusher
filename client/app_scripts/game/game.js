@@ -8,7 +8,7 @@ var chatText = document.getElementById('chatText');
 var chatDiv = document.getElementById('chatDiv');
 var surrenderBtn = document.getElementById('surrenderBtn');
 
-var ovarlay = document.getElementById('ovarlay');
+var ban_overlay = document.getElementById('ban-overlay');
 var banUsername = document.getElementById('banUsername');
 var bannBtn1 = document.getElementById('bannBtn1');
 var bannBtn2 = document.getElementById('bannBtn2');
@@ -45,10 +45,10 @@ var banOverlay = function(username){
         return false;
     }
     bannBtn4.onclick = function(){
-        overlay.classList.add("d-none");
+        ban_overlay.classList.add("d-none");
         return false;
     }
-    overlay.classList.remove("d-none");
+    ban_overlay.classList.remove("d-none");
 };
 
 socket.on('bannUserResponse', function(data){
@@ -67,7 +67,7 @@ socket.on('bannUserResponse', function(data){
         errorLabel.innerHTML = 'User is admin';
         logMsg('On bannUserResponse - user is admin');
     }else logMsg('On bannUserResponse - unknown error: ' + data.status);
-    setTimeout(function(){ overlay.classList.add("d-none"); }, 1500);
+    setTimeout(function(){ ban_overlay.classList.add("d-none"); }, 1500);
 });
 
 var addMessages = function(messages){

@@ -4,6 +4,8 @@
 
 var canvas = document.getElementById('myCanvas');
 var gl = canvas.getContext('webgl');
+var overlayRemoved = false;
+var overlay = document.getElementById('overlay');
 
 // default values used as parameters when loading an image as a texture
 var texParams = {
@@ -71,6 +73,10 @@ preloadTextures();
 
 var mainLoop = function(){
     if (shapeTextures.allTexturesLoaded && roomState){
+        if (!overlayRemoved){
+            overlay.classList.add('d-none');
+            overlayRemoved = true;
+        }
         roomState.step();
         roomState.draw();
     }
