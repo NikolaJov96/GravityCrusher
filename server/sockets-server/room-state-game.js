@@ -35,16 +35,19 @@ module.exports = function(gameRoom){
     self.initResponse = function(user){
         // TODO -- treba poslati i sve slike zajedno sa ovim podacima
         var ret = {
-            screen: {w: width, h: height},
+            screen: {w: 800, h: 600},
             state: 'game',
             role: 'spec',
-            host: self.room.hostName,
+            host: 'filip',
             hostActive: (self.room.host.page === 'Game' ? true : false),
-            join: self.room.joinName,
+            join: 'andrija',
             joinActive: (self.room.join.page === 'Game' ? true : false),
-            playerData: self.players,
-            planetData: self.planets,
-            bulletData: self.bullets,
+            planets: [{400, 300, 20, 3}, {100, 500, 40, 2}, {700, 50, 10, 3}]
+            hostActive: (self.room.host.page === 'Game' ? true : false),
+            joinActive: (self.room.join.page === 'Game' ? true : false),
+            players: [{600, 500, (0 - 1) * Math.Pi / 4, 0, 2}, {200, 100, (0 - 1) * Math.Pi / 4, 0, 1}],
+            bullets: [{200, 300, 3 * Math.Pi / 4, 2}, {400, 300, Math.Pi / 2, 1}, {450, 500, Math.Pi / 2, 1},
+                {100, 200, Math.Pi / 4, 2}, {400, 300, 3 * Math.Pi / 4, 1}, {400, 300, 0, 2}]
         };
         if (user.name === self.room.hostName){
             ret.role = 'host';
@@ -109,9 +112,9 @@ module.exports = function(gameRoom){
         var gameState = {
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
-            counter: self.counter * serverState.frameTime / 1000,
-            playerData: self.players,
-            bulletData: self.bullets,
+            players: [{500, 650, (0 - 1) * Math.Pi / 4, Math.Pi / 8, 2}, {200, 100, Math.Pi / 4, 0, 1}],
+            bullets: [{200, 300, 3 * Math.Pi / 4, 2}, {400, 300, Math.Pi / 2, 1}, {450, 500, Math.Pi / 2, 1},
+                {100, 200, Math.Pi / 4, 2}, {400, 300, 3 * Math.Pi / 4, 1}, {400, 300, 0, 2}]
         };
         if (self.room.host.socket && self.room.host.page === 'Game'){
             self.room.host.socket.emit('gameState', gameState);
@@ -165,4 +168,3 @@ module.exports = function(gameRoom){
 
     return self;
 };
-
