@@ -5,33 +5,37 @@
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
 
-const width = 1280;
-const height = 760;
-const speed = 1;
+const width = 4;
+const height = 3;
 
 module.exports = function(gameRoom){
     var self = {
         room: gameRoom,
         counter: 3 * 60 * 1000 / serverState.frameTime,
         players: [ {}, {} ],
-        stars: [ { x: width / 2.0, y: height / 2.0 } ]
+        planets: [],
+        bullets: [],
     };
-    
+
     for (var i = 0; i < 2; i++){
         self.players[i].x = (i === 0 ? 0 : width);
         self.players[i].y = (i === 0 ? 0 : height);
-        self.players[i].rotation = (i === 0 ? 0 : 2 * Math.PI);
+        self.players[i].tilt = 0.0;
         self.players[i].roll = 0.0;
-        self.players[i].arrUp = false;
-        self.players[i].arrDown = false;
-        self.players[i].arrLeft = false;
-        self.players[i].arrRight = false;
+        self.players[i].left = false;
+        self.players[i].right = false;
+        self.players[i].fire = false;
+        self.players[i].leftTilt = false;
+        self.players[i].rightTilt = false;
+        self.players[i].health = 100;
     }
-    
+
     logMsg('Room ' + self.room.name + ' is in game state.');
 
     self.initResponse = function(user){
+        // TODO -- treba poslati i sve slike zajedno sa ovim podacima
         var ret = {
+            screen: {w: width, h: height},
             state: 'game',
             role: 'spec',
             host: self.room.hostName,
@@ -39,7 +43,8 @@ module.exports = function(gameRoom){
             join: self.room.joinName,
             joinActive: (self.room.join.page === 'Game' ? true : false),
             playerData: self.players,
-            starData: self.stars
+            planetData: self.planets,
+            bulletData: self.bullets,
         };
         if (user.name === self.room.hostName){
             ret.role = 'host';
@@ -48,44 +53,65 @@ module.exports = function(gameRoom){
         }
         return ret;
     };
-    
+
     self.step = function(){
         var ret = { action: null };
-        
+
         var comms = [ self.room.hostCommand, self.room.joinCommand ];
         for (var i in comms){
-            if ('arrUp' in comms[i]) self.players[i].arrUp = comms[i].arrUp;
-            if ('arrDown' in comms[i]) self.players[i].arrDown = comms[i].arrDown;
-            if ('arrLeft' in comms[i]) self.players[i].arrLeft = comms[i].arrLeft;
-            if ('arrRight' in comms[i]) self.players[i].arrRight = comms[i].arrRight;
+            if ('left' in comms[i]) self.players[i].left = comms[i].left;
+            if ('right' in comms[i]) self.players[i].right = comms[i].right;
+            if ('fire' in comms[i]) self.players[i].fire = comms[i].fire;
+            if ('leftTilt' in comms[i]) self.players[i].leftTilt = comms[i].leftTilt;
+            if ('rightTilt' in comms[i]) self.players[i].rightTilt = comms[i].rightTilt;
         }
-        
+
+        // TODO: adjust to the new commands
         for (var i = 0; i < 2; i++){
-            if (self.players[i].arrLeft){
-                self.players[i].roll += 0.015;
-                if (self.players[i].roll > 0.5) self.players[i].roll = 0.5;
+            if (self.players[i].left){
+
             }
-            if (self.players[i].arrUp) {
-                self.players[i].x += 5 * Math.cos(self.players[i].rotation);
-                self.players[i].y += 5 * Math.sin(self.players[i].rotation);
+            if (self.players[i].right){
+
             }
-            if (self.players[i].arrRight){
-                self.players[i].roll -= 0.015;
-                if (self.players[i].roll < -0.5) self.players[i].roll = -0.5;
+            if (self.players[i].fire){
+
             }
-            if (!self.players[i].arrLeft && !self.players[i].arrRight){
-                if (self.players[i].roll < 0) self.players[i].roll += 0.015;
-                else if (self.players[i].roll > 0) self.players[i].roll -= 0.015;
+            if (self.players[i].leftTilt){
+
             }
-            self.players[i].rotation = 
-                (self.players[i].rotation - self.players[i].roll / 10.0 + 2 * Math.PI) % (2 * Math.PI);
+            if (self.players[i].rightTilt){
+
+            }
         }
-        
+        // for (var i = 0; i < 2; i++){
+        //     if (self.players[i].arrLeft){
+        //         self.players[i].roll += 0.015;
+        //         if (self.players[i].roll > 0.5) self.players[i].roll = 0.5;
+        //     }
+        //     if (self.players[i].arrUp) {
+        //         self.players[i].x += 5 * Math.cos(self.players[i].rotation);
+        //         self.players[i].y += 5 * Math.sin(self.players[i].rotation);
+        //     }
+        //     if (self.players[i].arrRight){
+        //         self.players[i].roll -= 0.015;
+        //         if (self.players[i].roll < -0.5) self.players[i].roll = -0.5;
+        //     }
+        //     if (!self.players[i].arrLeft && !self.players[i].arrRight){
+        //         if (self.players[i].roll < 0) self.players[i].roll += 0.015;
+        //         else if (self.players[i].roll > 0) self.players[i].roll -= 0.015;
+        //     }
+        //     self.players[i].rotation =
+        //         (self.players[i].rotation - self.players[i].roll / 10.0 + 2 * Math.PI) % (2 * Math.PI);
+        // }
+        // ENDTODO
+
         var gameState = {
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
             counter: self.counter * serverState.frameTime / 1000,
-            playerData: self.players
+            playerData: self.players,
+            bulletData: self.bullets,
         };
         if (self.room.host.socket && self.room.host.page === 'Game'){
             self.room.host.socket.emit('gameState', gameState);
@@ -98,10 +124,9 @@ module.exports = function(gameRoom){
                 self.room.spectators[i].socket.emit('gameState', gameState);
             }
         }
-        
-        var distSq = (self.players[0].x - self.players[1].x) * (self.players[0].x - self.players[1].x) +
-           (self.players[0].y - self.players[1].y) * (self.players[0].y - self.players[1].y);
-        if (distSq < 300){
+
+        // TODO: different end game logic
+        if (false){
             if (!self.room.host.isGuest) db.insertStatisticsForPlayer(self.room.hostName, "Won", null);
             if (!self.room.join.isGuest) db.insertStatisticsForPlayer(self.room.joinName, "Lost", null);
             self.room.winner = 'host';
@@ -122,7 +147,7 @@ module.exports = function(gameRoom){
                 logMsg('Room ' + self.room.name + ' game state finished, join surrendered.');
             }
         }
-        
+
         if (ret.action === 'nextState'){
             ret.nextState = RoomStateGameEnd;
             self.room.roomPublic = false;
@@ -134,7 +159,7 @@ module.exports = function(gameRoom){
                 }
             }
         }
-        
+
         return ret;
     };
 
