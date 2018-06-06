@@ -4,7 +4,7 @@
 
 var RoomStateLoading = require('./room-state-loading.js');
 
-module.exports = function(name, host, gamePublic, joinName, map, roomPublic, chatEnabled){
+module.exports = function(name, host, gamePublic, joinName, map, roomPublic, chatEnabled, planets){
     var self = {
         name: name,
         host: host,
@@ -20,7 +20,8 @@ module.exports = function(name, host, gamePublic, joinName, map, roomPublic, cha
         newMessages: [],
         hostCommand: {},
         joinCommand: {},
-        winner: ''
+        winner: '',
+        planets: planets
     };
     self.state = RoomStateLoading(self);
 
@@ -53,7 +54,7 @@ module.exports = function(name, host, gamePublic, joinName, map, roomPublic, cha
             if (self.host && self.host.socket && self.host.page === 'Game') self.host.socket.emit('broadcastResponse', { msgArr: msgArr });
             if (self.join && self.join.socket && self.join.page === 'Game') self.join.socket.emit('broadcastResponse', { msgArr: msgArr });
             for (i in self.spectators){
-                if (self.spectators[i].socket && self.spectators[i].page === 'Game') 
+                if (self.spectators[i].socket && self.spectators[i].page === 'Game')
                     self.spectators[i].socket.emit('broadcastResponse', { msgArr: msgArr });
             }
         }
@@ -66,7 +67,7 @@ module.exports = function(name, host, gamePublic, joinName, map, roomPublic, cha
         if (user.name === self.joinName) return true;
         return false;
     };
-    
+
     self.containsUserActive = function(user){
         if (self.host && user.name === self.hostName) return true;
         if (self.join && user.name === self.joinName) return true;

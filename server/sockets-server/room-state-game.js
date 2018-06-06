@@ -8,6 +8,10 @@ var db = require('../sql-server/database-interface.js');
 const width = 4;
 const height = 3;
 
+const MASS_TO_V = 0.5; //TODO: change constant
+const radiusRandFactor = 4;
+const radiusRandStart = -2;
+
 module.exports = function(gameRoom){
     var self = {
         room: gameRoom,
@@ -15,7 +19,17 @@ module.exports = function(gameRoom){
         players: [ {}, {} ],
         planets: [],
         bullets: [],
+
     };
+
+    for (var i in gameRoom.planets) {
+        self.planets[i] = { x: gameRoom.planets[i].PositionX,
+                            y: gameRoom.planets[i].PositionY,
+                            radius: Math.floor(Math.pow(gameRoom.planets[i].Mass, 1 / 3)
+                                                    * MASS_TO_V + Math.random() * radiusRandFactor - radiusRandStart),
+                            id : Math.floor(Math.random() * 16)
+                        }
+    }
 
     for (var i = 0; i < 2; i++){
         self.players[i].x = (i === 0 ? 0 : width);
@@ -42,8 +56,7 @@ module.exports = function(gameRoom){
             hostActive: (self.room.host.page === 'Game' ? true : false),
             join: 'andrija',
             joinActive: (self.room.join.page === 'Game' ? true : false),
-            planets: [{x: 400, y: 300, radius: 20, id: 3}, {x: 100, y: 500, radius: 40, id: 2},
-                {x: 700, y: 50, radius: 10, id: 3}],
+            planets: self.planets,
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
             players: [{x: 600, y: 500, tilt: (0 - 1) * Math.Pi / 4, roll: 0, health: 2},
