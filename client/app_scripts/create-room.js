@@ -104,5 +104,8 @@ socket.on('createGameRoomResponse', function(data){
     }else if (data.status === 'RoomNameTaken'){
         errorLabel.innerHTML = 'Room name is already taken';
         logMsg('On createGameRoomResponse - room name taken');
+    }else if (data.status === 'MapNotFound'){
+        errorLabel.innerHTML = 'Selected map is not recognized';
+        logMsg('On createGameRoomResponse - map not fount in the database');
     }else logMsg('On createGameRoomResponse - unknown error: ' + data.status);
 });
