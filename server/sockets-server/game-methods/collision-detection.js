@@ -21,8 +21,8 @@ module.exports = {
     },
 
     bulletPlayer: function(bullet, player, gameState){
-        var dim1 = gameState.playerRadius * 2.0;
-        var dim2 = gameState.playerRadius;
+        var dim1 = gameState.playerRadius;
+        var dim2 = gameState.playerRadius * 0.5;
         var x = bullet.x;
         var y = bullet.y;
 

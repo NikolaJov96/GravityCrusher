@@ -123,8 +123,8 @@ module.exports = function(gameRoom){
                 else self.players[i].x += 0.133 * dt;
             }
             if (!self.players[i].left && !self.players[i].right){
-                if (self.players[i].roll < 0) self.players[i].roll += 0,0005 * dt;
-                else if (self.players[i].roll > 0) self.players[i].roll -= 0,0005 * dt;
+                if (self.players[i].roll < 0) self.players[i].roll += 0.00167 * dt;
+                else if (self.players[i].roll > 0) self.players[i].roll -= 0.00167 * dt;
             }
 
             if (self.players[i].leftTilt){
@@ -183,16 +183,14 @@ module.exports = function(gameRoom){
         while(i--) {
             if (boundHit(self.bullets[i], self)) {
                 self.bullets.splice(i, 1);
+                continue;
             }
-        }
-
-        i = self.bullets.length;
-        while(i--) {
+            
             if (collisionPlayer(self.bullets[i], self.players[0], self)) {
                 //maybe draw explosion and stop game for a second
                 self.bullets.splice(i, 1);
                 self.players[0].health--;
-                if (self.players[0].health  === 0) {
+                if (self.players[0].health === 0) {
                     self.winner = 'join';
                     self.gameEnd = true;
                     logMsg("Join won");
@@ -204,7 +202,7 @@ module.exports = function(gameRoom){
                 //maybe draw explosion and stop game for a second
                 self.bullets.splice(i, 1);
                 self.players[1].health--;
-                if (self.players[1].health  === 0) {
+                if (self.players[1].health === 0) {
                     self.winner = 'host';
                     self.gameEnd = true;
                     logMsg("Host won");
@@ -214,13 +212,16 @@ module.exports = function(gameRoom){
 
 
             var j = self.planets.length;
+            var doContinue = false;
             while(j--) {
                 if (collisionCircle(self.bullets[i], self.planets[j])) {
                     //maybe draw explosion
                     self.bullets.splice(i, 1);
+                    doContinue = true;
+                    break;
                 }
-                continue;
             }
+            if (doContinue) continue;
 
             j = self.bullets.length;
             while(j--) {
@@ -228,6 +229,8 @@ module.exports = function(gameRoom){
                     //maybe draw explosion
                     self.bullets.splice(i, 1);
                     self.bullets.splice(j, 1);
+                    if (j < i) i--;
+                    break;
                 }
             }
         }

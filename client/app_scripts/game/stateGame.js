@@ -190,8 +190,8 @@ StateGame = function(data){
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [1.0, 1.0, 1.0]);
-            mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.5, 0.5, 0.5]);
+            //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
             if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)) self.objs.r1.draw();
             else self.objs.r2.draw();
         }
