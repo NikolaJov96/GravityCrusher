@@ -46,6 +46,10 @@ StateGame = function(data){
     self.pressed = [false, false, false, false, false];
     self.surrender = false;
     
+    self.createObject('white', 'spaceBody', 'white');
+    self.createObject('green', 'spaceBody', 'green');
+    self.createObject('red',   'spaceBody', 'red'  );
+    
     // init shapes
     self.createObject('shipg', 'ship', 'ship-g');
     self.createObject('shipr', 'ship', 'ship-r');
@@ -194,6 +198,29 @@ StateGame = function(data){
             //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
             if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)) self.objs.r1.draw();
             else self.objs.r2.draw();
+            
+            // draw helath bar
+            var barX = screen.w * 0.1;
+            var barY = screen.h * 0.05;
+            if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)){
+                barX = screen.w - barX;
+                barY = screen.h - barY;
+            }
+            
+            // draw background
+            mat4.fromTranslation(self.tranMatrix, [barX, barY, 20.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [1.1, 0.22, 1.0]);
+            self.objs.white.draw();
+            
+            // draw foreground
+            mat4.fromTranslation(self.tranMatrix, [barX, barY, 21.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [1.0 * self.players[i].health, 0.2, 1.0]);
+            if (self.players[i].health >= 0.3) self.objs.green.draw();
+            else self.objs.red.draw();
         }
         
         // draw bullets

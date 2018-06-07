@@ -4,6 +4,20 @@
 
 var preloadTextures = function(){
     var loaded = 0;
+    var colorImgs = [
+        { name: 'white', color: new Uint8Array([255, 255, 255, 255]) }, 
+        { name: 'green', color: new Uint8Array([0,   255, 0,   255]) }, 
+        { name: 'red',   color: new Uint8Array([255, 0,   0,   255]) }
+    ];
+    for (var i in colorImgs){
+        shapeTextures[colorImgs[i].name] = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, shapeTextures[colorImgs[i].name]);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.uniform1i(programInfo.samplerUnifLoc, 0);
+        gl.texImage2D(gl.TEXTURE_2D, texParams.level, texParams.internalFormat,
+                      texParams.width, texParams.height, texParams.border, 
+                      texParams.srcFormat, texParams.srcType, colorImgs[i].color);
+    }
     for (var i in textureList){
         shapeTextures[textureList[i]] = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, shapeTextures[textureList[i]]);
