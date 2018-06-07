@@ -54,6 +54,7 @@ module.exports = function(gameRoom){
         self.players[i].leftTilt = false;
         self.players[i].rightTilt = false;
         self.players[i].health = 100;
+        self.players[i].coolDown = 0.0;
     }
 
     logMsg('Room ' + self.room.name + ' is in game state.');
@@ -74,7 +75,7 @@ module.exports = function(gameRoom){
             players: [
                 {
                     x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt,
-                    roll: self.players[0].roll,  health: self.players[0].health
+                    roll: self.players[0].roll, health: self.players[0].health
                 },
                 {
                     x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt,
@@ -138,15 +139,18 @@ module.exports = function(gameRoom){
 
             //self.players[i].fire = true;
             if (self.players[i].fire){
-                var factor = (i === 0) ? -1 : 1;
-                self.bullets.push({
-                    x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
-                    y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
-                    tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,
-                    id: Math.floor(Math.random() * 4),
-                    radius: width / 100.0,
-                    velocity: 0.3,
-                });
+                if (self.players[i].coolDown < currentTime){
+                    self.players[i].coolDown = currentTime + 100;
+                    var factor = (i === 0) ? -1 : 1;
+                    self.bullets.push({
+                        x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
+                        y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
+                        tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,
+                        id: Math.floor(Math.random() * 4),
+                        radius: width / 100.0,
+                        velocity: 0.3,
+                    });
+                }
             }
         }
         // for (var i = 0; i < 2; i++){
