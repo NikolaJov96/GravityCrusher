@@ -10,6 +10,7 @@ const radiusRandStart = -2;
 const tiltBarrier = Math.PI * 0.35;
 const PLAYER_TILT_RADIUS = width / 8.0;
 const BULLET_DISP = 4;
+const MAX_HEALTH = 100;
 
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
@@ -53,8 +54,10 @@ module.exports = function(gameRoom){
         self.players[i].fire = false;
         self.players[i].leftTilt = false;
         self.players[i].rightTilt = false;
-        self.players[i].health = 100;
+        self.players[i].health = MAX_HEALTH;
         self.players[i].coolDown = 0.0;
+        self.players[i].bulletCo = 0;
+        self.players[i].coolDown2 = 0.0;
     }
 
     logMsg('Room ' + self.room.name + ' is in game state.');
@@ -75,11 +78,11 @@ module.exports = function(gameRoom){
             players: [
                 {
                     x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt,
-                    roll: self.players[0].roll, health: self.players[0].health
+                    roll: self.players[0].roll, health: 1.0 * self.players[0].health / MAX_HEALTH
                 },
                 {
                     x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt,
-                    roll: self.players[1].roll, health: self.players[1].health
+                    roll: self.players[1].roll, health: 1.0 * self.players[1].health / MAX_HEALTH
                 }
             ],
             bullets: []
@@ -137,19 +140,25 @@ module.exports = function(gameRoom){
                 if (self.players[i].tilt < -tiltBarrier) self.players[i].tilt = -tiltBarrier;
             }
 
-            //self.players[i].fire = true;
             if (self.players[i].fire){
-                if (self.players[i].coolDown < currentTime){
-                    self.players[i].coolDown = currentTime + 100;
-                    var factor = (i === 0) ? -1 : 1;
-                    self.bullets.push({
-                        x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
-                        y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
-                        tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,
-                        id: Math.floor(Math.random() * 4),
-                        radius: width / 100.0,
-                        velocity: 0.3,
-                    });
+                if (self.players[i].coolDown2 < currentTime){
+                    if (self.players[i].coolDown < currentTime){
+                        self.players[i].coolDown = currentTime + 100;
+                        self.players[i].bulletCo++;
+                        var factor = (i === 0) ? -1 : 1;
+                        self.bullets.push({
+                            x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
+                            y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
+                            tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,
+                            id: Math.floor(Math.random() * 4),
+                            radius: width / 100.0,
+                            velocity: 0.3,
+                        });
+                        if (self.players[i].bulletCo === 10){
+                            self.players[i].coolDown2 = currentTime + 2000;
+                            self.players[i].bulletCo = 0;
+                        }
+                    }
                 }
             }
         }
@@ -246,11 +255,11 @@ module.exports = function(gameRoom){
             players: [
                 {
                     x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt,
-                    roll: self.players[0].roll,  health: self.players[0].health
+                    roll: self.players[0].roll,  health: 1.0 * self.players[0].health / MAX_HEALTH
                 },
                 {
                     x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt,
-                    roll: self.players[1].roll, health: self.players[1].health
+                    roll: self.players[1].roll, health: 1.0 * self.players[1].health / MAX_HEALTH
                 }
             ],
             bullets: self.bullets
