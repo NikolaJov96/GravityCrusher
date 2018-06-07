@@ -14,6 +14,7 @@ const BULLET_DISP = 4;
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
 var collisionDetection = require('./game-methods/collision-detection.js');
+var gravity = require('./game-methods/gravity.js');
 
 var collisionCircle = collisionDetection.bulletCircle;
 var boundHit = collisionDetection.bulletBoundary;
@@ -173,6 +174,7 @@ module.exports = function(gameRoom){
 
         //TODO: state update, bullet movement and collision detection between bullets and players,
         // planets, screen boundary or other bullets
+        gravity.applyGravitationalPull(self, dt);
 
         for (var i in self.bullets) {
             self.bullets[i].x += -Math.sin(self.bullets[i].tilt) * self.bullets[i].velocity * dt;
