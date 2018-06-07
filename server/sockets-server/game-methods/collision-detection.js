@@ -19,13 +19,13 @@ module.exports = {
         if (bullet.y > gameState.height) return true;
         return false;
     },
-    
+
     bulletPlayer: function(bullet, player, gameState){
         var dim1 = gameState.playerRadius * 2.0;
         var dim2 = gameState.playerRadius;
         var x = bullet.x;
         var y = bullet.y;
-        
+
         var s = Math.sin(player.tilt);
         var c = Math.cos(player.tilt);
 
@@ -36,7 +36,7 @@ module.exports = {
         // rotate point
         var newX = x * c - y * s;
         var newY = x * s + y * c;
-        
+
         // check collisions
         if (newX > -dim1 && newX < dim1 && newY > -dim2 && newY < dim2) return true;
         if (newX > -dim2 && newX < dim2 && newY > -dim1 && newY < dim1) return true;

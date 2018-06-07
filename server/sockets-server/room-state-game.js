@@ -8,15 +8,16 @@ const MASS_TO_V = 0.5; //TODO: change constant
 const radiusRandFactor = 4;
 const radiusRandStart = -2;
 const tiltBarrier = Math.PI * 0.35;
-const PLAYER_TILT_RADIUS = width / 8;
+const PLAYER_TILT_RADIUS = width / 8.0;
 const BULLET_DISP = 4;
 
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
-var collision_detection = require('./game-methods/collision-detection.js');
+var collisionDetection = require('./game-methods/collision-detection.js');
 
-var collision = collision_detection.bulletCircle;
-var boundHit = collision_detection.bulletBoundary;
+var collisionCircle = collisionDetection.bulletCircle;
+var boundHit = collisionDetection.bulletBoundary;
+var collisionPlayer = collisionDetection.bulletPlayer;
 
 module.exports = function(gameRoom){
     var self = {
@@ -27,6 +28,10 @@ module.exports = function(gameRoom){
         bullets: [],
         width: width,
         height: height,
+        time: new Date().getTime(),
+        playerRadius: PLAYER_TILT_RADIUS,
+        winner: '',
+        gameEnd: false,
     };
 
     for (var i in gameRoom.planets) {
@@ -87,6 +92,11 @@ module.exports = function(gameRoom){
     };
 
     self.step = function(){
+
+        var currentTime = new Date().getTime();
+        var dt = currentTime - self.time;
+        self.time = currentTime;
+
         var ret = { action: null };
 
         var comms = [ self.room.hostCommand, self.room.joinCommand ];
@@ -101,40 +111,41 @@ module.exports = function(gameRoom){
         // TODO: adjust to the new commands, use mesured dt
         for (var i = 0; i < 2; i++){
             if (self.players[i].left){
-                self.players[i].roll += 0.05;
+                self.players[i].roll += 0.00167 * dt;
                 if (self.players[i].roll > 0.5) self.players[i].roll = 0.5;
-                if (i === 0) self.players[i].x += 4;
-                else self.players[i].x -= 4;
+                if (i === 0) self.players[i].x += 0.133 * dt;
+                else self.players[i].x -= 0.133 * dt;
             }
             if (self.players[i].right){
-                self.players[i].roll -= 0.05;
+                self.players[i].roll -= 0.00167 * dt;
                 if (self.players[i].roll < -0.5) self.players[i].roll = -0.5;
-                if (i === 0) self.players[i].x -= 4;
-                else self.players[i].x += 4;
+                if (i === 0) self.players[i].x -= 0.133 * dt;
+                else self.players[i].x += 0.133 * dt;
             }
             if (!self.players[i].left && !self.players[i].right){
-                if (self.players[i].roll < 0) self.players[i].roll += 0.015;
-                else if (self.players[i].roll > 0) self.players[i].roll -= 0.015;
+                if (self.players[i].roll < 0) self.players[i].roll += 0,0005 * dt;
+                else if (self.players[i].roll > 0) self.players[i].roll -= 0,0005 * dt;
             }
 
             if (self.players[i].leftTilt){
-                self.players[i].tilt += 0.04;
+                self.players[i].tilt += 0.0013 * dt;
                 if (self.players[i].tilt > tiltBarrier) self.players[i].tilt = tiltBarrier;
             }
             if (self.players[i].rightTilt){
-                self.players[i].tilt -= 0.04;
+                self.players[i].tilt -= 0.0013 * dt;
                 if (self.players[i].tilt < -tiltBarrier) self.players[i].tilt = -tiltBarrier;
             }
 
-            self.players[i].fire = true;
+            //self.players[i].fire = true;
             if (self.players[i].fire){
                 var factor = (i === 0) ? -1 : 1;
                 self.bullets.push({
                     x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
                     y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
-                    tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,// - ((factor + 1) / 2) * Math.PI,
+                    tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,
                     id: Math.floor(Math.random() * 4),
                     radius: width / 100.0,
+                    velocity: 0.3,
                 });
             }
         }
@@ -164,42 +175,56 @@ module.exports = function(gameRoom){
         // planets, screen boundary or other bullets
 
         for (var i in self.bullets) {
-            self.bullets[i].x += -Math.sin(self.bullets[i].tilt) * 8;
-            self.bullets[i].y += Math.cos(self.bullets[i].tilt) * 8;
+            self.bullets[i].x += -Math.sin(self.bullets[i].tilt) * self.bullets[i].velocity * dt;
+            self.bullets[i].y +=  Math.cos(self.bullets[i].tilt) * self.bullets[i].velocity * dt;
         }
 
-        for (var i in self.bullets) {
-            if (boundHit(self.bullets[i], self)) { //TODO bound hit
+        var i = self.bullets.length;
+        while(i--) {
+            if (boundHit(self.bullets[i], self)) {
                 self.bullets.splice(i, 1);
             }
         }
 
-        for (var i in self.bullets) {
-            /*
-            if (collision(self.bullets[i], self.players[0])) {
+        i = self.bullets.length;
+        while(i--) {
+            if (collisionPlayer(self.bullets[i], self.players[0], self)) {
                 //maybe draw explosion and stop game for a second
                 self.bullets.splice(i, 1);
-                self.player.health--;
-                if (self.player.health  === 0) handleGameEnd();
+                self.players[0].health--;
+                if (self.players[0].health  === 0) {
+                    self.winner = 'join';
+                    self.gameEnd = true;
+                    logMsg("Join won");
+                }
+                continue;
             }
 
-            if (collision(self.bullets[i], self.players[1])) {
+            if (collisionPlayer(self.bullets[i], self.players[1], self)) {
                 //maybe draw explosion and stop game for a second
                 self.bullets.splice(i, 1);
-                self.player.health--;
-                if (self.player.health  === 0) handleGameEnd(); set flag for if(false) and game winner
+                self.players[1].health--;
+                if (self.players[1].health  === 0) {
+                    self.winner = 'host';
+                    self.gameEnd = true;
+                    logMsg("Host won");
+                }
+                continue;
             }
-            */
 
-            for (var j in self.planets) {
-                if (collision(self.bullets[i], self.planets[j])) {
+
+            var j = self.planets.length;
+            while(j--) {
+                if (collisionCircle(self.bullets[i], self.planets[j])) {
                     //maybe draw explosion
                     self.bullets.splice(i, 1);
                 }
+                continue;
             }
 
-            for (var j in self.bullets) {
-                if ((i !== j) && (collision(self.bullets[i], self.bullets[j]))) {
+            j = self.bullets.length;
+            while(j--) {
+                if ((i !== j) && (collisionCircle(self.bullets[i], self.bullets[j]))) {
                     //maybe draw explosion
                     self.bullets.splice(i, 1);
                     self.bullets.splice(j, 1);
@@ -236,10 +261,10 @@ module.exports = function(gameRoom){
         }
 
         // TODO: different end game logic
-        if (false){
+        if (self.gameEnd){
             if (!self.room.host.isGuest) db.insertStatisticsForPlayer(self.room.hostName, "Won", null);
             if (!self.room.join.isGuest) db.insertStatisticsForPlayer(self.room.joinName, "Lost", null);
-            self.room.winner = 'host';
+            self.room.winner = self.winner;
             ret.action = 'nextState';
             logMsg('Room ' + self.room.name + ' game state finished.');
         } else {
