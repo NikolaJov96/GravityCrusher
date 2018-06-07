@@ -16,7 +16,11 @@ StateGame = function(data){
     };
     for (var i in data.planets){
         var newPlanet = {};
-        newPlanet.translation = [data.planets[i].x * self.prop.w, data.planets[i].y * self.prop.h, 0.0];
+        newPlanet.translation = [
+            (self.role !== 'join' ? screen.w - data.planets[i].x * self.prop.w : data.planets[i].x * self.prop.w), 
+            (self.role !== 'join' ? screen.h - data.planets[i].y * self.prop.h : data.planets[i].y * self.prop.h), 
+            0.0
+        ];
         newPlanet.radius = data.planets[i].radius;
         newPlanet.id = data.planets[i].id;
         self.planets.push(newPlanet);
@@ -25,23 +29,20 @@ StateGame = function(data){
     self.joinActive = data.joinActive;
     self.players = [ {}, {} ];
     for (var i = 0; i < 2; i++){
-        self.players[i].translation = [
-            data.players[i].x * self.prop.w,
-            data.players[i].y * self.prop.h,
-            0.0
-        ];
-        self.players[i].rotation = data.players[i].tilt;
-        self.players[i].roll = data.players[i].roll;
-        self.players[i].health = data.players[i].health;
+        for (var i = 0; i < 2; i++){
+            self.players[i].translation = [
+                (self.role !== 'join' ? screen.w - data.players[i].x * self.prop.w : data.players[i].x * self.prop.w),
+                (self.role !== 'join' ? screen.h - data.players[i].y * self.prop.h : data.players[i].y * self.prop.h),
+                0.0
+            ];
+            self.players[i].rotation = -data.players[i].tilt;
+            self.players[i].roll = data.players[i].roll;
+            self.players[i].health = data.players[i].health;
+        }
+        if (self.role !== 'join') self.players[0].rotation = (self.players[0].rotation + Math.PI) % (Math.PI * 2.0);
+        else self.players[1].rotation = (self.players[1].rotation + Math.PI) % (Math.PI * 2.0);
     }
     self.bullets = [];
-    for (var i in data.bullets){
-        var newBullet = {};
-        newBullet.translation = [data.bullets[i].x * self.prop.w, data.bullets[i].y * self.prop.h, 0.0];
-        newBullet.rotation = data.bullets[i].tilt;
-        newBullet.id = data.bullets[i].id;
-        self.bullets.push(newBullet);
-    }
     self.pressed = [false, false, false, false, false];
     self.surrender = false;
     
@@ -124,13 +125,30 @@ StateGame = function(data){
             if ('players' in data){
                 for (var i = 0; i < 2; i++){
                     self.players[i].translation = [
-                        data.players[i].x * self.prop.w,
-                        data.players[i].y * self.prop.h,
+                        (self.role !== 'join' ? screen.w - data.players[i].x * self.prop.w : data.players[i].x * self.prop.w),
+                        (self.role !== 'join' ? screen.h - data.players[i].y * self.prop.h : data.players[i].y * self.prop.h),
                         0.0
                     ];
-                    self.players[i].rotation = data.players[i].tilt;
+                    self.players[i].rotation = -data.players[i].tilt;
                     self.players[i].roll = data.players[i].roll;
                     self.players[i].health = data.players[i].health;
+                }
+                if (self.role !== 'join') self.players[0].rotation = (self.players[0].rotation + Math.PI) % (Math.PI * 2.0);
+                else self.players[1].rotation = (self.players[1].rotation + Math.PI) % (Math.PI * 2.0);
+            }
+            if ('bullets' in data){
+                self.bullets = [];
+                for (var i in data.bullets){
+                    var newBullet = {};
+                    newBullet.translation = [
+                        (self.role !== 'join' ? screen.w - data.bullets[i].x * self.prop.w : data.bullets[i].x * self.prop.w), 
+                        (self.role !== 'join' ? screen.h - data.bullets[i].y * self.prop.h : data.bullets[i].y * self.prop.h), 
+                        0.0
+                    ];
+                    newBullet.rotation = 
+                        (self.role !== 'join' ? (data.bullets[i].tilt + Math.PI) % (Math.PI * 2.0) : data.bullets[i].tilt);
+                    newBullet.id = data.bullets[i].id;
+                    self.bullets.push(newBullet);
                 }
             }
         }
@@ -168,7 +186,7 @@ StateGame = function(data){
             // draw ship
             mat4.fromTranslation(self.tranMatrix, self.players[i].translation);
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].roll,
-                        [Math.cos(self.players[i].rotation), Math.sin(self.players[i].rotation), 0.0]);
+                        [Math.cos(self.players[i].rotation + Math.PI/2), Math.sin(self.players[i].rotation + Math.PI/2), 0.0]);
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
@@ -195,7 +213,7 @@ StateGame = function(data){
         if (event.key === 'd' && !self.pressed[1]) self.pressed[1] = true;
         if (event.key === 'j' && !self.pressed[2]) self.pressed[2] = true;
         if (event.key === 'l' && !self.pressed[3]) self.pressed[3] = true;
-        if (event.key === ' ' && !self.pressed[4]) self.pressed[4] = true;
+        if (event.key === 's' && !self.pressed[4]) self.pressed[4] = true;
     };
     
     // on key up callback
@@ -204,7 +222,7 @@ StateGame = function(data){
         if (event.key === 'd' && self.pressed[1]) self.pressed[1] = false;
         if (event.key === 'j' && self.pressed[2]) self.pressed[2] = false;
         if (event.key === 'l' && self.pressed[3]) self.pressed[3] = false;
-        if (event.key === ' ' && self.pressed[4]) self.pressed[4] = false;
+        if (event.key === 's' && self.pressed[4]) self.pressed[4] = false;
     };
     
     var superFinish = self.finish;

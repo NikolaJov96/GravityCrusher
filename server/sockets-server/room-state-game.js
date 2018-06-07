@@ -5,16 +5,18 @@
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
 
-const width = 4;
-const height = 3;
+const width = 800;
+const height = 600;
 
 const MASS_TO_V = 0.5; //TODO: change constant
 const radiusRandFactor = 4;
 const radiusRandStart = -2;
+const tiltBarrier = Math.PI * 0.35;
 
 module.exports = function(gameRoom){
     var self = {
         room: gameRoom,
+        //TODO: max game duration
         counter: 3 * 60 * 1000 / serverState.frameTime,
         players: [ {}, {} ],
         planets: [],
@@ -32,8 +34,8 @@ module.exports = function(gameRoom){
     }
 
     for (var i = 0; i < 2; i++){
-        self.players[i].x = (i === 0 ? 0 : width);
-        self.players[i].y = (i === 0 ? 0 : height);
+        self.players[i].x = (i === 0 ? width * 0.1 : width * 0.9);
+        self.players[i].y = (i === 0 ? height * 0.1 : height * 0.9);
         self.players[i].tilt = 0.0;
         self.players[i].roll = 0.0;
         self.players[i].left = false;
@@ -49,7 +51,7 @@ module.exports = function(gameRoom){
     self.initResponse = function(user){
         // TODO -- treba poslati i sve slike zajedno sa ovim podacima
         var ret = {
-            screen: {w: 800, h: 600},
+            screen: {w: width, h: height},
             state: 'game',
             role: 'spec',
             host: 'filip',
@@ -60,17 +62,16 @@ module.exports = function(gameRoom){
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
             players: [
-                {x: 600, y: 500, tilt: (0 - 1) * Math.PI / 4, roll: 0, health: 2},
-                {x: 200, y: 100, tilt: (0 - 1) * Math.PI / 4, roll: 0, health: 1}
+                {
+                    x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt, 
+                    roll: self.players[0].roll,  health: self.players[0].health
+                },
+                {
+                    x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt, 
+                    roll: self.players[1].roll, health: self.players[1].health
+                }
             ],
-            bullets: [
-                {x: 200, y: 300, tilt: 3 * Math.PI / 4, id: 2},
-                {x: 400, y: 300, tilt: Math.PI / 2, id: 1}, 
-                {x: 450, y: 500, tilt: Math.PI / 2, id: 1},
-                {x: 100, y: 200, tilt: Math.PI / 4, id: 2}, 
-                {x: 400, y: 300, tilt: 3 * Math.PI / 4, id: 1},
-                {x: 400, y: 300, tilt: 0, id: 2}
-            ]
+            bullets: []
         };
         if (user.name === self.room.hostName){
             ret.role = 'host';
@@ -92,22 +93,39 @@ module.exports = function(gameRoom){
             if ('rightTilt' in comms[i]) self.players[i].rightTilt = comms[i].rightTilt;
         }
 
-        // TODO: adjust to the new commands
+        // TODO: adjust to the new commands, use mesured dt
         for (var i = 0; i < 2; i++){
             if (self.players[i].left){
-
+                self.players[i].roll += 0.05;
+                if (self.players[i].roll > 0.5) self.players[i].roll = 0.5;
+                if (i === 0) self.players[i].x += 4;
+                else self.players[i].x -= 4;
             }
             if (self.players[i].right){
-
+                self.players[i].roll -= 0.05;
+                if (self.players[i].roll < -0.5) self.players[i].roll = -0.5;
+                if (i === 0) self.players[i].x -= 4;
+                else self.players[i].x += 4;
             }
-            if (self.players[i].fire){
-
+            if (!self.players[i].left && !self.players[i].right){
+                if (self.players[i].roll < 0) self.players[i].roll += 0.015;
+                else if (self.players[i].roll > 0) self.players[i].roll -= 0.015;
             }
+            
             if (self.players[i].leftTilt){
-
+                self.players[i].tilt += 0.04;
+                if (self.players[i].tilt > tiltBarrier) self.players[i].tilt = tiltBarrier;
             }
             if (self.players[i].rightTilt){
-
+                self.players[i].tilt -= 0.04;
+                if (self.players[i].tilt < -tiltBarrier) self.players[i].tilt = -tiltBarrier;
+            }
+            
+            if (self.players[i].fire){
+                self.bullets.push({
+                    x: Math.random() * width, y: Math.random() * height, 
+                    tilt: Math.random() * Math.PI * 2, id: Math.floor(Math.random() * 4)
+                });
             }
         }
         // for (var i = 0; i < 2; i++){
@@ -131,20 +149,25 @@ module.exports = function(gameRoom){
         //         (self.players[i].rotation - self.players[i].roll / 10.0 + 2 * Math.PI) % (2 * Math.PI);
         // }
         // ENDTODO
+        
+        //TODO: state update, bullet movement and collision detection between bullets and players, 
+        // planets or screen boundary
 
+        // updating players and spectators on the new game state
         var gameState = {
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
             players: [
-                {x: 500, y: 650, tilt: (0 - 1) * Math.PI / 4, roll: Math.PI / 8, health: 2},
-                {x: 200, y: 100, tilt: Math.PI / 4,           roll: 0,           health: 1}
+                {
+                    x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt, 
+                    roll: self.players[0].roll,  health: self.players[0].health
+                },
+                {
+                    x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt, 
+                    roll: self.players[1].roll, health: self.players[1].health
+                }
             ],
-            bullets: [{x: 200, y: 300, tilt: 3 * Math.PI / 4, id: 2},
-                      {x: 400, y: 300, tilt: Math.PI / 2, id: 1},
-                      {x: 450, y: 500, tilt: Math.PI / 2, id: 1},
-                      {x: 100, y: 200, tilt: Math.PI / 4, id: 2},
-                      {x: 400, y: 300, tilt: 3 * Math.PI / 4, id: 1},
-                      {x: 400, y: 300, tilt: 0, id: 2}]
+            bullets: self.bullets
         };
         if (self.room.host.socket && self.room.host.page === 'Game'){
             self.room.host.socket.emit('gameState', gameState);
