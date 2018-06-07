@@ -42,6 +42,7 @@ module.exports = function(gameRoom){
                                                     * MASS_TO_V + Math.random() * radiusRandFactor - radiusRandStart),
                             id : Math.floor(Math.random() * 16)
                         }
+        self.planets[i].Mass = 100;
     }
 
     for (var i = 0; i < 2; i++){
@@ -187,7 +188,7 @@ module.exports = function(gameRoom){
                 self.bullets.splice(i, 1);
                 continue;
             }
-            
+
             if (collisionPlayer(self.bullets[i], self.players[0], self)) {
                 //maybe draw explosion and stop game for a second
                 self.bullets.splice(i, 1);
