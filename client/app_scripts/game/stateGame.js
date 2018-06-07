@@ -124,13 +124,13 @@ StateGame = function(data){
             if ('players' in data){
                 for (var i = 0; i < 2; i++){
                     self.players[i].translation = [
-                    data.players[i].x * self.prop.w,
-                    data.players[i].y * self.prop.h,
-                    0.0
-                ];
-                self.players[i].rotation = data.players[i].tilt;
-                self.players[i].roll = data.players[i].roll;
-                self.players[i].health = data.players[i].health;
+                        data.players[i].x * self.prop.w,
+                        data.players[i].y * self.prop.h,
+                        0.0
+                    ];
+                    self.players[i].rotation = data.players[i].tilt;
+                    self.players[i].roll = data.players[i].roll;
+                    self.players[i].health = data.players[i].health;
                 }
             }
         }
