@@ -1,23 +1,23 @@
 // Owner: Nikola Jovanovic (NikolaJov96)
 
 // Summary: Helper methods for collision detection between
-//          bullet adn planet or bullet and screen boundary
+//          bullet and circle or bullet and screen boundary
 
 module.exports = {
-    
-    bullet_planet: function(bullet, planet){
-        var distSqared = Math.pow(planet.x - bullet.x, 2) + Math.pow(planet.y - bullet.y, 2);
-        var maxDistSqared = Math.pow(planet.radius + bullet.radius, 2);
+
+    bulletCircle: function(bullet, circle){
+        var distSqared = Math.pow(circle.x - bullet.x, 2) + Math.pow(circle.y - bullet.y, 2);
+        var maxDistSqared = Math.pow(circle.radius + bullet.radius, 2);
         if (distSqared <= maxDistSqared) return true;
         return false;
     },
 
-    bullet_boundary: function(bullet){
+    bulletBoundary: function(bullet, gameState){
         if (bullet.x < 0) return true;
         if (bullet.y < 0) return true;
-        if (bullet.x > width) return true;
-        if (bullet.y > height) return true;
+        if (bullet.x > gameState.width) return true;
+        if (bullet.y > gameState.height) return true;
         return false;
     }
-    
+
 };

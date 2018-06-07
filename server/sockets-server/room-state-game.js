@@ -13,16 +13,20 @@ const BULLET_DISP = 4;
 
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
+var collision_detection = require('./game-methods/collision-detection.js');
+
+var collision = collision_detection.bulletCircle;
+var boundHit = collision_detection.bulletBoundary;
 
 module.exports = function(gameRoom){
     var self = {
         room: gameRoom,
         //TODO: max game duration
-        counter: 3 * 60 * 1000 / serverState.frameTime,
         players: [ {}, {} ],
         planets: [],
         bullets: [],
-
+        width: width,
+        height: height,
     };
 
     for (var i in gameRoom.planets) {
@@ -129,7 +133,8 @@ module.exports = function(gameRoom){
                     x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
                     y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
                     tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,// - ((factor + 1) / 2) * Math.PI,
-                    id: Math.floor(Math.random() * 4)
+                    id: Math.floor(Math.random() * 4),
+                    radius: width / 100.0,
                 });
             }
         }
@@ -163,14 +168,14 @@ module.exports = function(gameRoom){
             self.bullets[i].y += Math.cos(self.bullets[i].tilt) * 8;
         }
 
-/*
         for (var i in self.bullets) {
-            if (boundHit(self.bullets[i])) { //TODO bound hit
+            if (boundHit(self.bullets[i], self)) { //TODO bound hit
                 self.bullets.splice(i, 1);
             }
         }
 
         for (var i in self.bullets) {
+            /*
             if (collision(self.bullets[i], self.players[0])) {
                 //maybe draw explosion and stop game for a second
                 self.bullets.splice(i, 1);
@@ -184,6 +189,7 @@ module.exports = function(gameRoom){
                 self.player.health--;
                 if (self.player.health  === 0) handleGameEnd(); set flag for if(false) and game winner
             }
+            */
 
             for (var j in self.planets) {
                 if (collision(self.bullets[i], self.planets[j])) {
@@ -200,7 +206,7 @@ module.exports = function(gameRoom){
                 }
             }
         }
-*/
+
         // updating players and spectators on the new game state
         var gameState = {
             hostActive: (self.room.host.page === 'Game' ? true : false),
