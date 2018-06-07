@@ -11,6 +11,9 @@ const tiltBarrier = Math.PI * 0.35;
 const PLAYER_TILT_RADIUS = width / 8.0;
 const BULLET_DISP = 4;
 const MAX_HEALTH = 100;
+const TILT_DIFF = Math.PI / 16.0;
+const TILT_COEF = Math.sin(-TILT_DIFF);
+const X_DISP = width * 0.8;
 
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
@@ -47,9 +50,11 @@ module.exports = function(gameRoom){
     }
 
     for (var i = 0; i < 2; i++){
-        self.players[i].x = (i === 0 ? width * 0.1 : width * 0.9);
-        self.players[i].y = (i === 0 ? height * 0.1 : height * 0.9);
-        self.players[i].tilt = 0.0;
+        self.players[i].x = (i === 0 ? X_DISP * 0.5 : width - X_DISP * 0.5);
+        self.players[i].y = (i === 0 ? 
+                             (self.players[i].x - X_DISP) * TILT_COEF : 
+                             height - (width - self.players[i].x - X_DISP) * TILT_COEF);
+        self.players[i].tilt = TILT_DIFF;
         self.players[i].roll = 0.0;
         self.players[i].left = false;
         self.players[i].right = false;
@@ -119,27 +124,37 @@ module.exports = function(gameRoom){
             if (self.players[i].left){
                 self.players[i].roll += 0.00167 * dt;
                 if (self.players[i].roll > 0.5) self.players[i].roll = 0.5;
-                if (i === 0) self.players[i].x += 0.133 * dt;
-                else self.players[i].x -= 0.133 * dt;
+                if (i === 0){
+                    self.players[i].x += 0.133 * dt;
+                    self.players[i].y = (self.players[i].x - X_DISP) * TILT_COEF;
+                } else {
+                    self.players[i].x -= 0.133 * dt;
+                    self.players[i].y = height - (width - self.players[i].x - X_DISP) * TILT_COEF;
+                }
             }
             if (self.players[i].right){
                 self.players[i].roll -= 0.00167 * dt;
                 if (self.players[i].roll < -0.5) self.players[i].roll = -0.5;
-                if (i === 0) self.players[i].x -= 0.133 * dt;
-                else self.players[i].x += 0.133 * dt;
+                if (i === 0){
+                    self.players[i].x -= 0.133 * dt;
+                    self.players[i].y = (self.players[i].x - X_DISP) * TILT_COEF;
+                } else {    
+                    self.players[i].x += 0.133 * dt;
+                    self.players[i].y = height - (width - self.players[i].x - X_DISP) * TILT_COEF;
+                }
             }
             if (!self.players[i].left && !self.players[i].right){
-                if (self.players[i].roll < 0) self.players[i].roll += 0.00167 * dt;
-                else if (self.players[i].roll > 0) self.players[i].roll -= 0.00167 * dt;
+                if (self.players[i].roll < -0.00167 * dt) self.players[i].roll += 0.00167 * dt;
+                else if (self.players[i].roll > 0.00167 * dt) self.players[i].roll -= 0.00167 * dt;
             }
 
             if (self.players[i].leftTilt){
                 self.players[i].tilt += 0.0013 * dt;
-                if (self.players[i].tilt > tiltBarrier) self.players[i].tilt = tiltBarrier;
+                if (self.players[i].tilt > tiltBarrier + TILT_DIFF) self.players[i].tilt = tiltBarrier + TILT_DIFF;
             }
             if (self.players[i].rightTilt){
                 self.players[i].tilt -= 0.0013 * dt;
-                if (self.players[i].tilt < -tiltBarrier) self.players[i].tilt = -tiltBarrier;
+                if (self.players[i].tilt < -tiltBarrier - TILT_DIFF) self.players[i].tilt = -tiltBarrier - TILT_DIFF;
             }
 
             if (self.players[i].fire){
