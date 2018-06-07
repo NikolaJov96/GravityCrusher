@@ -38,11 +38,11 @@ module.exports = function(gameRoom){
     for (var i in gameRoom.planets) {
         self.planets[i] = { x: gameRoom.planets[i].PositionX,
                             y: gameRoom.planets[i].PositionY,
-                            radius: Math.floor(Math.pow(gameRoom.planets[i].Mass, 1 / 3)
+                            radius: Math.floor(Math.pow(gameRoom.planets[i].Mass, 1.0 / 3)
                                                     * MASS_TO_V + Math.random() * radiusRandFactor - radiusRandStart),
                             id : Math.floor(Math.random() * 16)
                         }
-        self.planets[i].Mass = 100;
+        self.planets[i].Mass = gameRoom.planets[i].Mass;
     }
 
     for (var i = 0; i < 2; i++){
