@@ -2,16 +2,17 @@
 
 // Summary: Class representing game room in game state
 
-var RoomStateGameEnd = require('./room-state-game-end.js');
-var db = require('../sql-server/database-interface.js');
-
 const width = 800;
 const height = 600;
-
 const MASS_TO_V = 0.5; //TODO: change constant
 const radiusRandFactor = 4;
 const radiusRandStart = -2;
 const tiltBarrier = Math.PI * 0.35;
+const PLAYER_TILT_RADIUS = width / 8;
+const BULLET_DISP = 4;
+
+var RoomStateGameEnd = require('./room-state-game-end.js');
+var db = require('../sql-server/database-interface.js');
 
 module.exports = function(gameRoom){
     var self = {
@@ -63,11 +64,11 @@ module.exports = function(gameRoom){
             joinActive: (self.room.join.page === 'Game' ? true : false),
             players: [
                 {
-                    x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt, 
+                    x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt,
                     roll: self.players[0].roll,  health: self.players[0].health
                 },
                 {
-                    x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt, 
+                    x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt,
                     roll: self.players[1].roll, health: self.players[1].health
                 }
             ],
@@ -111,7 +112,7 @@ module.exports = function(gameRoom){
                 if (self.players[i].roll < 0) self.players[i].roll += 0.015;
                 else if (self.players[i].roll > 0) self.players[i].roll -= 0.015;
             }
-            
+
             if (self.players[i].leftTilt){
                 self.players[i].tilt += 0.04;
                 if (self.players[i].tilt > tiltBarrier) self.players[i].tilt = tiltBarrier;
@@ -120,11 +121,15 @@ module.exports = function(gameRoom){
                 self.players[i].tilt -= 0.04;
                 if (self.players[i].tilt < -tiltBarrier) self.players[i].tilt = -tiltBarrier;
             }
-            
+
+            self.players[i].fire = true;
             if (self.players[i].fire){
+                var factor = (i === 0) ? -1 : 1;
                 self.bullets.push({
-                    x: Math.random() * width, y: Math.random() * height, 
-                    tilt: Math.random() * Math.PI * 2, id: Math.floor(Math.random() * 4)
+                    x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
+                    y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
+                    tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,// - ((factor + 1) / 2) * Math.PI,
+                    id: Math.floor(Math.random() * 4)
                 });
             }
         }
@@ -149,21 +154,64 @@ module.exports = function(gameRoom){
         //         (self.players[i].rotation - self.players[i].roll / 10.0 + 2 * Math.PI) % (2 * Math.PI);
         // }
         // ENDTODO
-        
-        //TODO: state update, bullet movement and collision detection between bullets and players, 
-        // planets or screen boundary
 
+        //TODO: state update, bullet movement and collision detection between bullets and players,
+        // planets, screen boundary or other bullets
+
+        for (var i in self.bullets) {
+            self.bullets[i].x += -Math.sin(self.bullets[i].tilt) * 8;
+            self.bullets[i].y += Math.cos(self.bullets[i].tilt) * 8;
+        }
+
+/*
+        for (var i in self.bullets) {
+            if (boundHit(self.bullets[i])) { //TODO bound hit
+                self.bullets.splice(i, 1);
+            }
+        }
+
+        for (var i in self.bullets) {
+            if (collision(self.bullets[i], self.players[0])) {
+                //maybe draw explosion and stop game for a second
+                self.bullets.splice(i, 1);
+                self.player.health--;
+                if (self.player.health  === 0) handleGameEnd();
+            }
+
+            if (collision(self.bullets[i], self.players[1])) {
+                //maybe draw explosion and stop game for a second
+                self.bullets.splice(i, 1);
+                self.player.health--;
+                if (self.player.health  === 0) handleGameEnd(); set flag for if(false) and game winner
+            }
+
+            for (var j in self.planets) {
+                if (collision(self.bullets[i], self.planets[j])) {
+                    //maybe draw explosion
+                    self.bullets.splice(i, 1);
+                }
+            }
+
+            for (var j in self.bullets) {
+                if ((i !== j) && (collision(self.bullets[i], self.bullets[j]))) {
+                    //maybe draw explosion
+                    self.bullets.splice(i, 1);
+                    self.bullets.splice(j, 1);
+                }
+            }
+        }
+*/
         // updating players and spectators on the new game state
         var gameState = {
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
             players: [
                 {
-                    x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt, 
+                    x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt,
                     roll: self.players[0].roll,  health: self.players[0].health
                 },
                 {
-                    x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt, 
+                    x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt,
                     roll: self.players[1].roll, health: self.players[1].health
                 }
             ],
