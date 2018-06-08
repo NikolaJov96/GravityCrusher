@@ -1,6 +1,6 @@
-// Owner: Filip Mandic (mandula8)
+// Owner: Filip Mandic 2015/0308 (mandula8)
 
-// Summary: Functions and callbacks for deleting token from table
+// Summary: Functions and callbacks used to select statistics for position
 
 var queries = require('./queries');
 
@@ -14,10 +14,11 @@ var callbackTableToPass = function(info) { return function(error, rows, fields) 
         }
         else {
 
+            var j = info.start + 1;
             var outputResult = [];
             for(var i in rows) {
                 outputResult[i] = {
-                    'Rank': rows[i].row,
+                    'Rank': j++,
                     'Username': rows[i].username,
                     'Games Played': rows[i].games_played_count,
                     'Games Won': rows[i].games_won_count,
@@ -27,9 +28,7 @@ var callbackTableToPass = function(info) { return function(error, rows, fields) 
 
             }
 
-            var maxRow = rows[rows.length - 1].row - rows[0].row + 1;
-
-            if (info.callback) info.callback("Success", outputResult, maxRow);
+            if (info.callback) info.callback("Success", outputResult, info.activeUsersCount);
         }
 }}
 
@@ -44,8 +43,8 @@ var selectCallbackQuery = function(info) { return function(error, rows, fields) 
             if(info.start <= 0 || info.activeUsersCount <= info.rowCount) info.start = 0;
             else info.start--;
 
-            if ((info.start > info.activeUsersCount - info.rowCount) && (info.activeUsersCount > info.rowCount))
-                    info.start = info.activeUsersCount - info.rowCount;
+            //if ((info.start > info.activeUsersCount - info.rowCount) && (info.activeUsersCount > info.rowCount))
+            //        info.start = info.activeUsersCount - info.rowCount;
 
             info.connection.query(queries.selectStatistics,
                 [info.start, info.metric, info.secondMetric, info.rowCount, info.start], callbackTableToPass(info));

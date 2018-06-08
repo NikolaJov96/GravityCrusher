@@ -17,7 +17,7 @@ var validityCheck  = {
     },
     password: function(entry){
         if (entry.length === 0) return 0.0;
-        
+
         var level = entry.length;
         // check for digit
         if (! /[0-9]/.test(entry)) level *= 0.8;
@@ -113,7 +113,7 @@ socket.on('connect', function(){
     logMsg('Socket connected.');
 });
 
-// accept page init respose 
+// accept page init respose
 socket.on('pageInitResponse', function(data){
     if ('signedIn' in data) signedIn = data.signedIn;
     else attrMissing('signedIn', 'pageInitResponse', data);
@@ -142,8 +142,8 @@ socket.on('pageInitResponse', function(data){
     if (initCallback){
         logMsg('Calling init callback.');
         initCallback(data);
-    }else{ 
-        logMsg('Caching init callback data.'); 
+    }else{
+        logMsg('Caching init callback data.');
         initCallbackData = data;
     }
     if (universalCallback){
@@ -156,11 +156,11 @@ socket.on('pageInitResponse', function(data){
 // sign out response callback
 socket.on('signOutResponse', function(data){
     if (!('status' in data)) attrMissing('status', 'updateAccountResponse', data);
-    
-    if (data.status === 'Success'){ 
-        logMsg('On signOutResponse - success'); 
+
+    if (data.status === 'Success'){
+        logMsg('On signOutResponse - success');
         setCookie('token', '', 0);
-        window.location = '/'; 
+        window.location = '/';
     }else if (data.status === 'TokenNoMatch') logMsg('On signOutResponse - invalid token');
     else logMsg('On signOutResponse - unknown error: ' + data.status);
 });

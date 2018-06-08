@@ -1,6 +1,6 @@
-// Owner: Filip Mandic (mandula8)
+// Owner: Filip Mandic 2015/0308 (mandula8)
 
-// Summary: Functions and callbacks for inserting new token by sending username
+// Summary: Functions and callbacks for deleting tokens that have not been used for a while
 
 var queries = require('./queries');
 

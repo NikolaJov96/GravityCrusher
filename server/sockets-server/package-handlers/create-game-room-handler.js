@@ -27,40 +27,48 @@ module.exports = function(socket){ return function(data){
             }
             if (freeName) {
                 if (!data.gamePublic){
-                db.checkIfUserExists(data.opponent, function(socket, data) { return function(status) {
-                    if (status == 'UsernameNotExists'){
-                        socket.emit('createGameRoomResponse', { status: 'InvalidOpponent' });
-                    } else {
-                        var newRoom = require('../game-room.js')(data.name, socket.user, data.gamePublic,
-                                                                 data.opponent, data.gameMap, data.roomPublic, true);
-                        serverState.gameRooms.push(newRoom);
-                        for (var user in serverState.users){
-                            if (serverState.users[user].socket && serverState.users[user].page === 'GameRooms'){
-                                serverState.users[user].socket.emit('gameRoomsUpdate', {
-                                    rooms: require('../rooms-to-display.js')(serverState.users[user])
-                                });
-                            }
+                    db.checkIfUserExists(data.opponent, function(socket, data) { return function(status) {
+                        if (status === 'UsernameNotExists'){
+                            socket.emit('createGameRoomResponse', { status: 'InvalidOpponent' });
+                        } else {
+                            db.selectObjectsOnMap(data.gameMap, function(socket, data) { return function(status, planets) {
+                                if (status === 'Success') {
+                                    var newRoom = require('../game-room.js')(data.name, socket.user, data.gamePublic,
+                                                    data.opponent, data.gameMap, data.roomPublic, true, planets);
+                                    serverState.gameRooms.push(newRoom);
+                                    for (var user in serverState.users){
+                                        if (serverState.users[user].socket && serverState.users[user].page === 'GameRooms'){
+                                            serverState.users[user].socket.emit('gameRoomsUpdate', {
+                                                rooms: require('../rooms-to-display.js')(serverState.users[user])
+                                            });
+                                        }
+                                    }
+
+                                    socket.emit('createGameRoomResponse', { status: 'Success' });
+                                }
+                                else socket.emit('createGameRoomResponse', { status: status });
+                            }; }(socket, data));
                         }
-
-                        socket.emit('createGameRoomResponse', { status: 'Success' });
-                    }
-                }; }(socket, data));
-            } else {
-                var newRoom = require('../game-room.js')(data.name, socket.user, data.gamePublic,
-                                                         '', data.gameMap, data.roomPublic, true);
-
-                serverState.gameRooms.push(newRoom);
-                for (var user in serverState.users){
-                    if (serverState.users[user].socket && serverState.users[user].page === 'GameRooms'){
-                        serverState.users[user].socket.emit('gameRoomsUpdate', {
-                            rooms: require('../rooms-to-display.js')(serverState.users[user])
-                        });
-                    }
+                    }; }(socket, data));
+                } else {
+                    db.selectObjectsOnMap(data.gameMap, function(socket, data) { return function(status, planets) {
+                        var newRoom = require('../game-room.js')(data.name, socket.user, data.gamePublic,
+                                                                 '', data.gameMap, data.roomPublic, true, planets);
+                        if (status === 'Success') {
+                            serverState.gameRooms.push(newRoom);
+                            for (var user in serverState.users){
+                                if (serverState.users[user].socket && serverState.users[user].page === 'GameRooms'){
+                                    serverState.users[user].socket.emit('gameRoomsUpdate', {
+                                        rooms: require('../rooms-to-display.js')(serverState.users[user])
+                                    });
+                                }
+                            }
+                            socket.emit('createGameRoomResponse', { status: 'Success' });
+                        }
+                        else socket.emit('createGameRoomResponse', { status: status });
+                    }; }(socket, data));
                 }
-
-                socket.emit('createGameRoomResponse', { status: 'Success' });
             }
+            else socket.emit('createGameRoomResponse', { status: 'RoomNameTaken' });
         }
-        else socket.emit('createGameRoomResponse', { status: 'RoomNameTaken' });
-    }
 }};

@@ -31,9 +31,11 @@ module.exports = function(socket){ return function(data){
 
                 socket.emit('bannUserResponse', { status: status});
 
-                if (data.username in serverState.users){
-                    serverState.users[data.username].socket.emit('signOutResponse',
-                                                 {'status':'Success', 'deactivated':false});
+                if (status === 'Success') {
+                    if (data.username in serverState.users){
+                        serverState.users[data.username].socket.emit('signOutResponse',
+                                                     {'status':'Success', 'deactivated':false});
+                    }
                 }
 
             }

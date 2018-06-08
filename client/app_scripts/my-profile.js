@@ -9,6 +9,11 @@ var image = document.getElementById('image');
 var profileAvatar = document.getElementById('profileAvatar');
 
 initCallback = function(data){
+    if ('payload' in data && 'redirect' in data.payload && data.payload.redirect){
+        window.location = 'index';
+        return;
+    }
+    
     if (avatar) profileAvatar.src = 'data:image/png;base64,' + avatar;
     usernameLabel.innerHTML = 'Username: ' + username;
 };

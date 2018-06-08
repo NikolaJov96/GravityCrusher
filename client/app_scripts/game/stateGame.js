@@ -4,35 +4,110 @@
 
 StateGame = function(data){
     // state initialization
-    console.log('current state: game - move using w a s d');
+    console.log('current state: game - move using a, s, d, j, k and l');
     self = abstractState();
     self.role = data.role;
     self.hostName = data.host;
-    self.hostActive = data.hostActive;
     self.joinName = data.join;
+    self.planets = [];
+    self.prop = {
+        w: screen.w / data.screen.w,
+        h: screen.h / data.screen.h
+    };
+    for (var i in data.planets){
+        var newPlanet = {};
+        newPlanet.translation = [
+            (self.role !== 'join' ? screen.w - data.planets[i].x * self.prop.w : data.planets[i].x * self.prop.w),
+            (self.role !== 'join' ? screen.h - data.planets[i].y * self.prop.h : data.planets[i].y * self.prop.h),
+            Math.random()
+        ];
+        newPlanet.radius = data.planets[i].radius * self.prop.w / 100.0;
+        newPlanet.id = data.planets[i].id;
+        self.planets.push(newPlanet);
+    }
+    self.hostActive = data.hostActive;
     self.joinActive = data.joinActive;
-    self.counter = data.counter;
+    self.gameTimer = data.gameTimer;
     self.players = [ {}, {} ];
     for (var i = 0; i < 2; i++){
-        self.players[i].translation = [data.playerData[i].x, data.playerData[i].y, 0.0];
-        self.players[i].roll = data.playerData[i].roll;
-        self.players[i].rotation = data.playerData[i].rotation;
+        for (var i = 0; i < 2; i++){
+            self.players[i].translation = [
+                (self.role !== 'join' ? screen.w - data.players[i].x * self.prop.w : data.players[i].x * self.prop.w),
+                (self.role !== 'join' ? screen.h - data.players[i].y * self.prop.h : data.players[i].y * self.prop.h),
+                0.0
+            ];
+            self.players[i].rotation = -data.players[i].tilt;
+            self.players[i].roll = data.players[i].roll;
+            self.players[i].health = data.players[i].health;
+        }
+        if (self.role !== 'join') self.players[0].rotation = (self.players[0].rotation + Math.PI) % (Math.PI * 2.0);
+        else self.players[1].rotation = (self.players[1].rotation + Math.PI) % (Math.PI * 2.0);
     }
-    self.starPos = [data.starData[0].x, data.starData[0].y, -100.0];
-    self.pressed = [false, false, false, false];
+    self.bullets = [];
+    self.effects = [];
+    self.stars = [];
+    for (var i = 0; i < 100; i++){
+        self.stars.push({
+            translation: [Math.random() * screen.w, Math.random() * screen.h, -20.0],
+            rotation: Math.random() * Math.PI * 2.0,
+            id: Math.floor(Math.random() * 3)
+        });
+    }
+    for (var i = 0; i < 4; ++i){ // add several of shooting stars
+        self.stars.push({
+            translation: [Math.random() * screen.w, Math.random() * screen.h, -20.0],
+            rotation: Math.random() * Math.PI * 2.0,
+            id: 3
+        });
+    }
+    self.pressed = [false, false, false, false, false, false];
     self.surrender = false;
-    /*self.translation = [screen.w * 0.35, screen.h * 0.35, 0.0];
-    self.rotation = Math.random() * 2 * Math.PI;
-    self.roll = 0.0;*/
+
+    self.createObject('white', 'spaceBody', 'white');
+    self.createObject('green', 'spaceBody', 'green');
+    self.createObject('red',   'spaceBody', 'red'  );
+
+    // add all taxtures
     
-    // init ship shape
-    self.createObject('shipg', 'ship', 'ship-g');
-    self.createObject('shipr', 'ship', 'ship-r');
-    // init exhaust shape
-    self.createObject('exhaust', 'exhaust', 'exhaust');
-    // init star shape
-    self.createObject('star', 'spaceBody', 'star');
-    
+    self.createObject('m0', 'spaceBody', 'missles/rocket');
+    self.createObject('m1', 'spaceBody', 'missles/missle-green');
+    self.createObject('m2', 'spaceBody', 'missles/missle-red');
+    self.createObject('m3', 'spaceBody', 'missles/missle-yellow');
+    self.createObject('exp', 'spaceBody', 'missles/explosion');
+
+    self.createObject('p0', 'spaceBody', 'planets/planet-1');
+    self.createObject('p1', 'spaceBody', 'planets/planet-2');
+    self.createObject('p2', 'spaceBody', 'planets/planet-3');
+    self.createObject('p3', 'spaceBody', 'planets/planet-4');
+    self.createObject('p4', 'spaceBody', 'planets/planet-5');
+    self.createObject('p5', 'spaceBody', 'planets/planet-6');
+    self.createObject('p6', 'spaceBody', 'planets/planet-7');
+    self.createObject('p7', 'spaceBody', 'planets/planet-8');
+    self.createObject('p8', 'spaceBody', 'planets/planet-9');
+    self.createObject('p9', 'spaceBody', 'planets/planet-10');
+    self.createObject('p10', 'spaceBody', 'planets/planet-11');
+    self.createObject('p11', 'spaceBody', 'planets/planet-12');
+    self.createObject('p12', 'spaceBody', 'planets/planet-13');
+    self.createObject('p13', 'spaceBody', 'planets/planet-14');
+    self.createObject('p14', 'spaceBody', 'planets/planet-15');
+
+    self.createObject('rd0', 'ship', 'ships/dark-blue-rocket');
+    self.createObject('rd1', 'ship', 'ships/dark-green-rocket');
+    self.createObject('rd2', 'ship', 'ships/dark-red-rocket');
+    self.createObject('rd3', 'ship', 'ships/dark-yellow-rocket');
+    self.createObject('r0', 'ship', 'ships/blue-rocket');
+    self.createObject('r1', 'ship', 'ships/green-rocket');
+    self.createObject('r2', 'ship', 'ships/red-rocket');
+    self.createObject('r3', 'ship', 'ships/yellow-rocket');
+
+    self.createObject('sw0', 'spaceBody', 'stars/star-1-w');
+    self.createObject('sw1', 'spaceBody', 'stars/star-2-w');
+    self.createObject('sw2', 'spaceBody', 'stars/star-3-w');
+    self.createObject('sw3', 'spaceBody', 'stars/shooting-star-white');
+    self.createObject('sy0', 'spaceBody', 'stars/star-1-y');
+    self.createObject('sy1', 'spaceBody', 'stars/star-2-y');
+    self.createObject('sy2', 'spaceBody', 'stars/star-3-y');
+
     // UI update
     if (self.role !== 'spec'){
         surrenderBtn.innerHTML = 'surrender';
@@ -41,110 +116,212 @@ StateGame = function(data){
             return false;
         };
     }
-    
+    pl1.innerHTML = self.hostName;
+    pl2.innerHTML = self.joinName;
+    middle.innerHTML = Math.floor(self.gameTimer / 1000 / 60) + ':' + Math.floor(self.gameTimer / 1000) % 60;
+    if (self.role !== 'join'){
+        pl1.style.color = 'green';
+        pl2.style.color = 'red';
+    }else{
+        pl1.style.color = 'red';
+        pl2.style.color = 'green';
+    }
+    middle.style.color = 'white';
+
     // init projection and view matrices used throughout this roomState
-    mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0, 
+    mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0,
                screen.h / 2.0, -screen.h / 2.0, 0, 1000);
-    mat4.lookAt(self.viewMatrix, [screen.w / 2.0, screen.h / 2.0, 200], 
+    mat4.lookAt(self.viewMatrix, [screen.w / 2.0, screen.h / 2.0, 200],
                 [screen.w / 2.0, screen.h / 2.0, 0], [0, 1, 0]);
-    self.lightSource = new Float32Array(self.starPos);
+    self.lightSource = new Float32Array([screen.w / 2.0, screen.h / 2.0, 10]);
     self.lightSource[2] = 40.0;
     self.ambientColor = new Float32Array([0.6, 0.6, 0.6]);
     self.directedColor = new Float32Array([0.9, 0.9, 0.9]);
-    
+
     self.handleStatePackage = function(data){
         if (!('hostActive' in data)) attrMissing('hostActive', 'gameState', data);
         else if (!('joinActive' in data)) attrMissing('joinActive', 'gameState', data);
         else{
             self.hostActive = data.hostActive;
             self.joinActive = data.joinActive;
-            self.counter = data.counter;
+            self.gameTimer = data.gameTimer;
             if ('starData' in data && data.stars.length > 0){
                 self.starPos[0] = data.stars[0].x;
                 self.starPos[1] = data.stars[0].y;
             }
-            if ('playerData' in data){
+            if ('players' in data){
                 for (var i = 0; i < 2; i++){
-                    self.players[i].translation = [data.playerData[i].x, data.playerData[i].y, 0.0];
-                    self.players[i].roll = data.playerData[i].roll;
-                    self.players[i].rotation = data.playerData[i].rotation;
+                    self.players[i].translation = [
+                        (self.role !== 'join' ? screen.w - data.players[i].x * self.prop.w : data.players[i].x * self.prop.w),
+                        (self.role !== 'join' ? screen.h - data.players[i].y * self.prop.h : data.players[i].y * self.prop.h),
+                        0.0
+                    ];
+                    self.players[i].rotation = -data.players[i].tilt;
+                    self.players[i].roll = data.players[i].roll;
+                    self.players[i].health = data.players[i].health;
+                }
+                if (self.role !== 'join') self.players[0].rotation = (self.players[0].rotation + Math.PI) % (Math.PI * 2.0);
+                else self.players[1].rotation = (self.players[1].rotation + Math.PI) % (Math.PI * 2.0);
+            }
+            if ('bullets' in data){
+                self.bullets = [];
+                for (var i in data.bullets){
+                    var newBullet = {};
+                    newBullet.translation = [
+                        (self.role !== 'join' ? screen.w - data.bullets[i].x * self.prop.w : data.bullets[i].x * self.prop.w),
+                        (self.role !== 'join' ? screen.h - data.bullets[i].y * self.prop.h : data.bullets[i].y * self.prop.h),
+                        0.0
+                    ];
+                    newBullet.rotation =
+                        (self.role !== 'join' ? (data.bullets[i].tilt + Math.PI) % (Math.PI * 2.0) : data.bullets[i].tilt);
+                    newBullet.id = data.bullets[i].id;
+                    self.bullets.push(newBullet);
+                }
+            }
+            if ('effects' in data){
+                self.effects = [];
+                for (var i in data.effects){
+                    var newEffect = {};
+                    newEffect.translation = [
+                        (self.role !== 'join' ? screen.w - data.effects[i].x * self.prop.w : data.effects[i].x * self.prop.w),
+                        (self.role !== 'join' ? screen.h - data.effects[i].y * self.prop.h : data.effects[i].y * self.prop.h),
+                        20.0
+                    ];
+                    newEffect.rotation =
+                        (self.role !== 'join' ? (data.effects[i].tilt + Math.PI) % (Math.PI * 2.0) : data.effects[i].tilt);
+                    newEffect.radius = data.effects[i].radius;
+                    self.effects.push(newEffect);
                 }
             }
         }
     };
-    
+
     self.step = function(){
         socket.emit('gameCommand', {
-            arrUp: self.pressed[0],
-            arrDown: self.pressed[1],
-            arrLeft: self.pressed[2],
-            arrRight: self.pressed[3],
+            left: self.pressed[0],
+            right: self.pressed[1],
+            leftTilt: self.pressed[2],
+            rightTilt: self.pressed[3],
+            fire: self.pressed[4],
+            bomb: self.pressed[5],
             surrender: self.surrender
         });
+        middle.innerHTML = Math.floor(self.gameTimer / 1000 / 60) + ':' + Math.floor(self.gameTimer / 1000) % 60;
     };
-    
+
     self.draw = function(){
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-        
-        // draw star
-        mat4.fromTranslation(self.tranMatrix, self.starPos);
-        mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI, [0.0, 0.0, 1.0]);
-        mat4.invert(self.normMatrix, self.tranMatrix);
-        mat4.transpose(self.normMatrix, self.normMatrix);
-        mat4.scale(self.tranMatrix, self.tranMatrix, [1.0, 1.0, 1.0]);
-        mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
-        self.objs.star.draw();
 
+        // draw background
+        for (var i in self.stars){
+            mat4.fromTranslation(self.tranMatrix, self.stars[i].translation);
+            mat4.rotate(self.tranMatrix, self.tranMatrix, self.stars[i].rotation, [0.0, 0.0, 1.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            if (self.stars[i].id === 3){ // shooting star
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.2, 0.2, 1.0]);
+            } else{
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.03, 0.03, 1.0]);
+            }
+            self.objs['sw' + self.stars[i].id].draw();
+        }
+
+        // draw planets
+        for (var i in self.planets){
+            mat4.fromTranslation(self.tranMatrix, self.planets[i].translation);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [self.planets[i].radius, self.planets[i].radius, 1.0]);
+            self.objs['p' + self.planets[i].id].draw();
+        }
+
+        // draw players
         for (var i = 0; i < 2; i++){
             // draw ship
             mat4.fromTranslation(self.tranMatrix, self.players[i].translation);
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].roll,
-                        [Math.cos(self.players[i].rotation), Math.sin(self.players[i].rotation), 0.0]);
+                        [Math.cos(self.players[i].rotation + Math.PI/2),
+                         Math.sin(self.players[i].rotation + Math.PI/2), 0.0]);
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [1.0, 1.0, 1.0]);
-            mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
-            if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)) self.objs.shipg.draw();
-            else self.objs.shipr.draw();
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.4]);
+            if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)) self.objs.r1.draw();
+            else self.objs.r2.draw();
 
-            // draw exhaust
-            if (self.pressed[1]){
-                mat4.fromTranslation(self.tranMatrix, self.players[i].translation);
-                mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].roll,
-                            [Math.cos(self.players[i].rotation), Math.sin(self.players[i].rotation), 0.0]);
-                mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].rotation, [0.0, 0.0, 1.0]);
-                mat4.invert(self.normMatrix, self.tranMatrix);
-                mat4.transpose(self.normMatrix, self.normMatrix);
-                mat4.scale(self.tranMatrix, self.tranMatrix, [1.0, 1.0, 1.0]);
-                // make exhaust position relative to the ship position
-                mat4.translate(self.tranMatrix, self.tranMatrix, [-180, 0.0, 0.0]);
-                self.objs.exhaust.draw();
+            // draw helath bar
+            var barX = screen.w * 0.1;
+            var barY = screen.h * 0.05;
+            if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)){
+                barX = screen.w - barX;
+                barY = screen.h - barY;
             }
+            // draw background
+            mat4.fromTranslation(self.tranMatrix, [barX, barY, 20.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.6, 0.11, 1.0]);
+            self.objs.white.draw();
+            // draw foreground
+            mat4.fromTranslation(self.tranMatrix, [barX, barY, 21.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.58 * self.players[i].health, 0.1, 1.0]);
+            if (self.players[i].health >= 0.3) self.objs.green.draw();
+            else self.objs.red.draw();
+        }
+
+        // draw bullets
+        for (var i in self.bullets){
+            mat4.fromTranslation(self.tranMatrix, self.bullets[i].translation);
+            mat4.rotate(self.tranMatrix, self.tranMatrix, self.bullets[i].rotation, [0.0, 0.0, 1.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            if (self.bullets[i].id === 0){ // if missle is a bomb
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.2, 0.2, 1.0]);
+            }
+            else{
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.04, 0.08, 1.0]);
+            }
+            self.objs['m' + self.bullets[i].id].draw();
+        }
+        
+        // draw effects
+        for (var i in self.effects){
+            mat4.fromTranslation(self.tranMatrix, self.effects[i].translation);
+            mat4.rotate(self.tranMatrix, self.tranMatrix, self.effects[i].rotation, [0.0, 0.0, 1.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [self.effects[i].radius, self.effects[i].radius, 1.0]);
+            self.objs.exp.draw();
         }
     };
-    
+
     // on key down callback
     self.onKeyDown = function(event){
-        if (event.key === 'w' && !self.pressed[0]) self.pressed[0] = true;
-        if (event.key === 's' && !self.pressed[1]) self.pressed[1] = true;
-        if (event.key === 'a' && !self.pressed[2]) self.pressed[2] = true;
-        if (event.key === 'd' && !self.pressed[3]) self.pressed[3] = true;
+        if (event.key === 'a' && !self.pressed[0]) self.pressed[0] = true;
+        if (event.key === 'd' && !self.pressed[1]) self.pressed[1] = true;
+        if (event.key === 'j' && !self.pressed[2]) self.pressed[2] = true;
+        if (event.key === 'l' && !self.pressed[3]) self.pressed[3] = true;
+        if (event.key === 's' && !self.pressed[4]) self.pressed[4] = true;
+        if (event.key === 'k' && !self.pressed[5]) self.pressed[5] = true;
     };
-    
+
     // on key up callback
     self.onKeyUp = function(event){
-        if (event.key === 'w' && self.pressed[0]) self.pressed[0] = false;
-        if (event.key === 's' && self.pressed[1]) self.pressed[1] = false;
-        if (event.key === 'a' && self.pressed[2]) self.pressed[2] = false;
-        if (event.key === 'd' && self.pressed[3]) self.pressed[3] = false;
+        if (event.key === 'a' && self.pressed[0]) self.pressed[0] = false;
+        if (event.key === 'd' && self.pressed[1]) self.pressed[1] = false;
+        if (event.key === 'j' && self.pressed[2]) self.pressed[2] = false;
+        if (event.key === 'l' && self.pressed[3]) self.pressed[3] = false;
+        if (event.key === 's' && self.pressed[4]) self.pressed[4] = false;
+        if (event.key === 'k' && self.pressed[5]) self.pressed[5] = false;
     };
-    
+
     var superFinish = self.finish;
-    self.finish = function(){ 
+    self.finish = function(){
         logMsg('game state finished');
         superFinish();
     };
-    
+
     return self;
 };

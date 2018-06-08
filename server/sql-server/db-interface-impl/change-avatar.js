@@ -1,6 +1,6 @@
-// Owner: Filip Mandic (mandula8)
+// Owner: Filip Mandic 2015/0308 (mandula8)
 
-// Summary: Functions and callbacks for selecting avatar for username
+// Summary: Functions and callbacks for changing avatar for username
 
 var queries = require('./queries');
 var updateToken = require('./token-updating-submodule');

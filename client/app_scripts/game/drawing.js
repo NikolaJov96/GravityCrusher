@@ -5,6 +5,13 @@
 var canvas = document.getElementById('myCanvas');
 var gl = canvas.getContext('webgl');
 
+var overlayRemoved = false;
+var overlay = document.getElementById('overlay');
+
+var pl1 = document.getElementById('pl1');
+var middle = document.getElementById('middle');
+var pl2 = document.getElementById('pl2');
+
 // default values used as parameters when loading an image as a texture
 var texParams = {
     level: 0,
@@ -20,7 +27,7 @@ var texParams = {
 // width and height of the rendering suface (might differ from the canvas width and height in pixels)
 var screen = { w: canvas.width, h: canvas.height };
 
-gl.clearColor(0.3, 0.3, 0.3, 1.0);
+gl.clearColor(0.0, 0.0, 0.0, 1.0);
 gl.enable(gl.DEPTH_TEST);
 gl.enable(gl.BLEND);
 gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
@@ -71,6 +78,10 @@ preloadTextures();
 
 var mainLoop = function(){
     if (shapeTextures.allTexturesLoaded && roomState){
+        if (!overlayRemoved){
+            overlay.classList.add('d-none');
+            overlayRemoved = true;
+        }
         roomState.step();
         roomState.draw();
     }

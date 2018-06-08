@@ -53,13 +53,11 @@ CREATE TABLE `cosmic_object` (
   `map_id` int(11) NOT NULL,
   `position_x` float NOT NULL,
   `position_y` float NOT NULL,
-  `velocity_x` float NOT NULL,
-  `velocity_y` float NOT NULL,
   `mass` float NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_map_idx` (`map_id`),
   CONSTRAINT `id_map` FOREIGN KEY (`map_id`) REFERENCES `game_map` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +66,7 @@ CREATE TABLE `cosmic_object` (
 
 LOCK TABLES `cosmic_object` WRITE;
 /*!40000 ALTER TABLE `cosmic_object` DISABLE KEYS */;
-INSERT INTO `cosmic_object` VALUES (1,1,30,40,10,15,300),(2,1,20,30,40,5,20),(3,1,20,40,10,15,40),(4,2,30,40,100,150,500),(5,2,80,80,100,150,4000),(6,2,350,350,100,450,500),(7,2,20,40,10,15,300),(8,3,30,50,100,15,100),(9,3,30,40,20,120,200),(10,3,30,400,250,250,350),(11,3,350,450,150,10,800),(12,3,300,400,100,150,200);
+INSERT INTO `cosmic_object` VALUES (1,1,100,666,100),(2,1,233,366,33),(3,1,300,433,33),(4,1,466,133,100),(5,2,166,600,50),(6,2,250,180,50),(7,2,266,400,33),(8,2,333,633,33),(9,2,400,300,33),(10,2,500,133,33),(11,3,166,400,66),(12,3,320,620,50),(13,3,400,233,33);
 /*!40000 ALTER TABLE `cosmic_object` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -119,7 +117,7 @@ CREATE TABLE `statistics` (
 
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
-INSERT INTO `statistics` VALUES (1,0,0),(2,10,8),(3,8,8),(4,9,3),(5,10,9),(6,5,4),(7,7,1),(8,6,3);
+INSERT INTO `statistics` VALUES (1,0,0),(2,10,8),(3,8,8),(4,9,3),(5,10,9),(6,5,4),(7,7,1),(8,6,3),(10,3,2),(11,15,12),(12,7,6),(13,9,3),(14,6,1),(15,7,4),(16,16,1),(17,16,15),(18,26,11),(19,6,5),(20,3,1),(21,0,0),(22,2,2),(23,10,2),(24,0,0);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,7 +146,7 @@ CREATE TABLE `token` (
 
 LOCK TABLES `token` WRITE;
 /*!40000 ALTER TABLE `token` DISABLE KEYS */;
-INSERT INTO `token` VALUES (1,1,'2018-06-06 09:35:03','aaabbbcccddda'),(2,2,'2018-06-06 09:35:03','aaabbbcccdddb'),(3,3,'2018-06-06 09:35:03','aaabbbcccdddc'),(4,1,'2018-06-06 09:35:03','aaabbbcccdddd'),(5,2,'2018-06-06 09:35:03','aaabbbcccddde'),(6,4,'2018-06-06 09:35:04','aaabbbcccdddf'),(7,5,'2018-06-06 09:35:04','aaabbbcccdddg'),(8,6,'2018-06-06 09:35:04','aaabbbcccdddh'),(9,7,'2018-06-06 09:35:04','aaabbbcccdddi'),(10,4,'2018-06-06 09:35:04','aaabbbcccdddj'),(11,7,'2018-06-06 09:35:04','aaabbbcccdddk'),(12,8,'2018-06-06 09:35:04','aaabbbcccdddl'),(13,9,'2018-06-06 09:35:04','aaabbbcccdddm');
+INSERT INTO `token` VALUES (1,1,'2018-06-08 10:37:25','aaabbbcccddda'),(2,2,'2018-06-08 10:37:25','aaabbbcccdddb'),(3,3,'2018-06-08 10:37:25','aaabbbcccdddc'),(4,1,'2018-06-08 10:37:25','aaabbbcccdddd'),(5,2,'2018-06-08 10:37:25','aaabbbcccddde'),(6,4,'2018-06-08 10:37:25','aaabbbcccdddf'),(7,5,'2018-06-08 10:37:25','aaabbbcccdddg'),(8,6,'2018-06-08 10:37:25','aaabbbcccdddh'),(9,7,'2018-06-08 10:37:25','aaabbbcccdddi'),(10,4,'2018-06-08 10:37:25','aaabbbcccdddj'),(11,7,'2018-06-08 10:37:25','aaabbbcccdddk'),(12,8,'2018-06-08 10:37:25','aaabbbcccdddl'),(13,9,'2018-06-08 10:37:25','aaabbbcccdddm');
 /*!40000 ALTER TABLE `token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,7 +168,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,7 +177,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Filip','filipmandic80@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-06 09:35:02','default'),(2,'Andrija','andrija6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-06 09:35:03','default'),(3,'Nikola','nikola6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-06 09:35:03','default'),(4,'Nemanja','nemanja6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-06 09:35:03','default'),(5,'Jovan','jovan6@gmail.com','dcdcdcdccdc4dc45d564','12346579898451','2018-06-06 09:35:03','default'),(6,'Jelena','jelena6@gmail.com','dc48d4c9c4d4cd484bbb','abababaababababababababbababaab','2018-06-06 09:35:03','default'),(7,'Milica','milica6@gmail.com','4b84b65b651b556b151','aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbb','2018-06-06 09:35:03','default'),(8,'Petar','petar6@gmail.com','54f54f4f645f4f4f56','dfdfdfffddffddfdfdfdfdfdfdfdfd','2018-06-06 09:35:03','default'),(9,'Marko','marko6@gmail.com','111111111111111aaaaa111111','fffffffffffffffffffffffffffffff','2018-06-06 09:35:03','default');
+INSERT INTO `user` VALUES (1,'Filip','filipmandic80@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:22','default'),(2,'Andrija','andrija6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(3,'Nikola','nikola6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(4,'Nemanja','nemanja6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(5,'Jovan','jovan6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(6,'Jelena','jelena6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(7,'Milica','milica6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(8,'Petar','petar6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(9,'Marko','marko6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(10,'Dejan','dejan6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(11,'Tijana','tijana6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(12,'Luka','Luka6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(13,'Jelica','jelica6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(14,'Nevena','Nevena6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(15,'Vojislav','vojislav6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(16,'Sara','sara6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(17,'Emilija','emilija6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(18,'Drazen','drazen6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(19,'Tamara','tamara6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:23','default'),(20,'Dragan','dragan6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:24','default'),(21,'Miroslav','miroslav6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:24','default'),(22,'Teodora','Teodora6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:24','default'),(23,'Ana','ana6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:24','default'),(24,'Andjela','andjela6@gmail.com','32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25','f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94','2018-06-08 10:37:24','default');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -204,7 +202,7 @@ CREATE TABLE `user_banned` (
 
 LOCK TABLES `user_banned` WRITE;
 /*!40000 ALTER TABLE `user_banned` DISABLE KEYS */;
-INSERT INTO `user_banned` VALUES (5,'2018-06-06 09:35:03'),(8,'2018-06-06 09:35:03');
+INSERT INTO `user_banned` VALUES (5,'2018-06-08 10:37:25'),(8,'2018-06-08 10:37:25');
 /*!40000 ALTER TABLE `user_banned` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,7 +227,7 @@ CREATE TABLE `user_disabled` (
 
 LOCK TABLES `user_disabled` WRITE;
 /*!40000 ALTER TABLE `user_disabled` DISABLE KEYS */;
-INSERT INTO `user_disabled` VALUES (6,'2018-06-06 09:35:03'),(7,'2018-06-06 09:35:03');
+INSERT INTO `user_disabled` VALUES (6,'2018-06-08 10:37:25'),(7,'2018-06-08 10:37:25');
 /*!40000 ALTER TABLE `user_disabled` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -281,7 +279,7 @@ CREATE TABLE `user_password_reset` (
 
 LOCK TABLES `user_password_reset` WRITE;
 /*!40000 ALTER TABLE `user_password_reset` DISABLE KEYS */;
-INSERT INTO `user_password_reset` VALUES (5,'2018-06-06 09:35:03','jovanresetujesvojusifru'),(6,'2018-06-06 09:35:03','jelenaresetujesvojusifru'),(8,'2018-06-06 09:35:03','petarresetujesvojusifru');
+INSERT INTO `user_password_reset` VALUES (5,'2018-06-08 10:37:25','jovanresetujesvojusifru'),(6,'2018-06-08 10:37:25','jelenaresetujesvojusifru'),(8,'2018-06-08 10:37:25','petarresetujesvojusifru');
 /*!40000 ALTER TABLE `user_password_reset` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -346,41 +344,135 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `fill_statistics_table`()
 BEGIN
-
+DECLARE i INT;
+SET i = 2;
 UPDATE statistics
 SET games_played_count = 10,
 	games_won_count = 8
-WHERE user_id = 2;
+WHERE user_id = i;
 
+SET i = i + 1;
 UPDATE statistics
 SET games_played_count = 8,
 	games_won_count = 8
-WHERE user_id = 3;
+WHERE user_id = i;
 
+SET i = i + 1;
 UPDATE statistics
 SET games_played_count = 9,
 	games_won_count = 3
-WHERE user_id = 4;
+WHERE user_id = i;
 
+SET i = i + 1;
 UPDATE statistics
 SET games_played_count = 10,
 	games_won_count = 9
-WHERE user_id = 5;
+WHERE user_id = i;
 
+SET i = i + 1;
 UPDATE statistics
 SET games_played_count = 5,
 	games_won_count = 4
-WHERE user_id = 6;
+WHERE user_id = i;
 
+SET i = i + 1;
 UPDATE statistics
 SET games_played_count = 7,
 	games_won_count = 1
-WHERE user_id = 7;
+WHERE user_id = i;
 
+SET i = i + 1;
 UPDATE statistics
 SET games_played_count = 6,
 	games_won_count = 3
-WHERE user_id = 8;
+WHERE user_id = i;
+#stari
+
+SET i = i + 2;
+UPDATE statistics
+SET games_played_count = 3,
+	games_won_count = 2
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 15,
+	games_won_count = 12
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 7,
+	games_won_count = 6
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 9,
+	games_won_count = 3
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 6,
+	games_won_count = 1
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 7,
+	games_won_count = 4
+WHERE user_id = i;
+#i = 15
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 16,
+	games_won_count = 1
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 16,
+	games_won_count = 15
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 26,
+	games_won_count = 11
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 6,
+	games_won_count = 5
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 3,
+	games_won_count = 1
+WHERE user_id = i;
+#i = 20
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 0,
+	games_won_count = 0
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 2,
+	games_won_count = 2
+WHERE user_id = i;
+
+SET i = i + 1;
+UPDATE statistics
+SET games_played_count = 10,
+	games_won_count = 2
+WHERE user_id = i;
 
 END ;;
 DELIMITER ;
@@ -405,41 +497,44 @@ INSERT INTO game_map(name) VALUES ("Sirius");
 INSERT INTO game_map(name) VALUES ("Galaxy");
 INSERT INTO game_map(name) VALUES ("Apolo");
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(1, 30, 40, 10, 15, 300);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(1, 100, 666, 100);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(1, 20, 30, 40, 5, 20);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(1, 233, 366, 33);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(1, 20, 40, 10, 15, 40);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(1, 300, 433, 33);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(2, 30, 40, 100, 150, 500);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(1, 466, 133, 100);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(2, 80, 80, 100, 150, 4000);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(2, 166, 600, 50);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(2, 350, 350, 100, 450, 500);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(2, 250, 180, 50);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(2, 20, 40, 10, 15, 300);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(2, 266, 400, 33);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(3, 30, 50, 100, 15, 100);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(2, 333, 633, 33);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(3, 30, 40, 20, 120, 200);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(2, 400, 300, 33);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(3, 30, 400, 250, 250, 350);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(2, 500, 133, 33);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(3, 350, 450, 150, 10, 800);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(3, 166, 400, 66);
 
-INSERT INTO cosmic_object(map_id, position_x, position_y, velocity_x, velocity_y, mass)
-VALUES(3, 300, 400, 100, 150, 200);
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(3, 320, 620, 50);
+
+INSERT INTO cosmic_object(map_id, position_x, position_y, mass)
+VALUES(3, 400, 233, 33);
 
 END ;;
 DELIMITER ;
@@ -586,30 +681,158 @@ INSERT INTO statistics(user_id) VALUES (4);
 
 
 INSERT INTO user(username, email, password_hash, password_salt) 
-VALUES("Jovan", "jovan6@gmail.com", "dcdcdcdccdc4dc45d564", "12346579898451");
+VALUES("Jovan", "jovan6@gmail.com",
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
 
 INSERT INTO statistics(user_id) VALUES (5);
 
 INSERT INTO user(username, email, password_hash, password_salt) 
-VALUES("Jelena", "jelena6@gmail.com", "dc48d4c9c4d4cd484bbb", "abababaababababababababbababaab");
+VALUES("Jelena", "jelena6@gmail.com",
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
 
 INSERT INTO statistics(user_id) VALUES (6);
 
 
 INSERT INTO user(username, email, password_hash, password_salt) 
-VALUES("Milica", "milica6@gmail.com", "4b84b65b651b556b151", "aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbb");
+VALUES("Milica", "milica6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
 
 INSERT INTO statistics(user_id) VALUES (7);
 
 
 INSERT INTO user(username, email, password_hash, password_salt) 
-VALUES("Petar", "petar6@gmail.com", "54f54f4f645f4f4f56", "dfdfdfffddffddfdfdfdfdfdfdfdfd");
+VALUES("Petar", "petar6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
 
 INSERT INTO statistics(user_id) VALUES (8);
 
 
 INSERT INTO user(username, email, password_hash, password_salt) 
-VALUES("Marko", "marko6@gmail.com", "111111111111111aaaaa111111", "fffffffffffffffffffffffffffffff");
+VALUES("Marko", "marko6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Dejan", "dejan6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (10);
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Tijana", "tijana6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (11);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Luka", "Luka6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (12);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Jelica", "jelica6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (13);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Nevena", "Nevena6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (14);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Vojislav", "vojislav6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (15);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Sara", "sara6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (16);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Emilija", "emilija6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (17);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Drazen", "drazen6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (18);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Tamara", "tamara6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (19);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Dragan", "dragan6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (20);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Miroslav", "miroslav6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (21);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Teodora", "Teodora6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (22);
+
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Ana", "ana6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (23);
+
+INSERT INTO user(username, email, password_hash, password_salt) 
+VALUES("Andjela", "andjela6@gmail.com", 
+        "32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25", 
+        "f62fc60bc4bcbb3436112fe8f2ca11e450e939114b4a93500ec2bbecd825e138ef1eb39cd70e9f69233618e9b69aeccc0a9bc0bdfd362611edf1cd51f77d6f9be31ce333b6bb9a59134a2fe9d9333e04516502619646d3350d40c33ed6a4ac26d41aec1452d893a2a183e2c368f471be09ab53a4ebac84f6d57b6b6f2a898b94");
+
+INSERT INTO statistics(user_id) VALUES (24);
+
 
 INSERT INTO admin VALUES (1);
 INSERT INTO admin VALUES (2);
@@ -687,4 +910,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-06 11:37:20
+-- Dump completed on 2018-06-08 12:38:11

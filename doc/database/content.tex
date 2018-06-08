@@ -58,17 +58,22 @@ Crusher}, на предмету Принципи софтверског инже
 
 \begin{enumerate}
     \item user(\underline{id}, username, email, password\_hash, password\_salt,
-        create\_date)
+        create\_date, avatar)
     \item user\_banned(\underline{user\_id}, bann\_date)
     \item user\_disabled(\underline{user\_id}, disable\_date)
     \item user\_not\_confirmed(\underline{user\_id}, confirm\_code)
     \item user\_password\_reset(\underline{user\_id}, reset\_date, confirm\_code)
-    \item token(\underline{id}, user\_id, token\_create\_date)
+    \item admin(\underline{user\_id})
+    \item token(\underline{id}, token\_valid\_date, user\_id, token\_code)
     \item statistics(\underline{user\_id}, games\_played\_count, games\_won\_count)
     \item game\_map(\underline{id}, name)
-    \item cosmic\_object(\underline{id}, map\_id, position\_x, position\_y,
-        velocity\_x, velocity\_y, mass)
+    \item cosmic\_object(\underline{id}, map\_id, position\_x, position\_y, mass)
 \end{enumerate}
+
+
+
+% necessary evil
+\newpage
 
 
 
@@ -103,6 +108,8 @@ Crusher}, на предмету Принципи софтверског инже
     \hline
         create\_date & timestamp & No & No \\
     \hline
+        avatar & varchar(40) & No & No \\
+    \hline
     \end{tabular}
 
 \end{table}
@@ -134,6 +141,31 @@ Crusher}, на предмету Принципи софтверског инже
 
 \end{table}
 
+\subsection{admin}
+Садржи податке о томе који корсници су администратори.
+
+\begin{table}[h!]
+\centering
+\small
+
+    \begin{tabular}{ | m{0.45\textwidth} | m{0.22\textwidth} | m{0.1\textwidth} | m{0.1\textwidth} | }
+    \hline
+        \cellcolor{blue!25}\textbf{\textit{Name}} &
+
+        \cellcolor{blue!25}\textbf{\textit{Datatype}} &
+        \cellcolor{blue!25}\textbf{\textit{Is PK}} &
+        \cellcolor{blue!25}\textbf{\textit{Is FK}} \\
+    \hline
+    \hline
+        user\_id & int(11) & Yes & Yes \\
+    \hline
+    \end{tabular}
+
+\end{table}
+
+% necessary evil
+\newpage
+
 \subsection{user\_password\_reset}
 Садржи податке о томе који корсници су послали захтев за промену лозинке.
 
@@ -159,9 +191,6 @@ Crusher}, на предмету Принципи софтверског инже
     \end{tabular}
 
 \end{table}
-
-% Evil
-\newpage
 
 \subsection{user\_banned}
 Садржи податке о корисницима којима је забрањено учествовање у игри.
@@ -229,13 +258,20 @@ Crusher}, на предмету Принципи софтверског инже
     \hline
         id\_token & int(11) & Yes & No \\
     \hline
-        token\_create\_date & timestamp & No & No \\
+        token\_valid\_date & timestamp & No & No \\
     \hline
         user\_id & int(11) & No & Yes \\
+    \hline
+        token\_code & varchar(45) & No & No \\
+    \hline
+
     \hline
     \end{tabular}
 
 \end{table}
+
+% necessary evil
+\newpage
 
 \subsection{statistics}
 Садржи статистичке податке за сваког корисника.
@@ -262,9 +298,6 @@ Crusher}, на предмету Принципи софтверског инже
     \end{tabular}
 
 \end{table}
-
-% Evil
-\newpage
 
 \subsection{game\_map}
 Садржи основне податке о мапама за игру.
@@ -313,10 +346,6 @@ Crusher}, на предмету Принципи софтверског инже
         position\_x & float & No & No \\
     \hline
         position\_y & float & No & No \\
-    \hline
-        velocity\_x & float & No & No \\
-    \hline
-        velocity\_y & float & No & No \\
     \hline
         mass & float & No & No \\
     \hline

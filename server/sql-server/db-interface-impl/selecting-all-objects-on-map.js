@@ -1,4 +1,4 @@
-// Owner: Filip Mandic (mandula8)
+// Owner: Filip Mandic 2015/0308 (mandula8)
 
 // Summary: Functions and callbacks selecting all objects from game map
 
@@ -18,8 +18,6 @@ var selectObjectsCallback = function(info) { return function(error, rows, fields
                 outputResult[i] = {
                     'PositionX': rows[i].position_x,
                     'PositionY': rows[i].position_y,
-                    'VelocityX': rows[i].velocity_x,
-                    'VelocityY': rows[i].velocity_y,
                     'Mass': rows[i].mass
                 }
 
