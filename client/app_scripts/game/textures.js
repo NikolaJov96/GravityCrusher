@@ -60,7 +60,7 @@ var textureList = [
     'planets/planet-1', 'planets/planet-2', 'planets/planet-3', 'planets/planet-4',
     'planets/planet-5', 'planets/planet-6', 'planets/planet-7', 'planets/planet-8',
     'planets/planet-9', 'planets/planet-10', 'planets/planet-11', 'planets/planet-12',
-    'planets/planet-13', 'planets/planet-14', 'planets/planet-15', 'planets/planet-16',
+    'planets/planet-13', 'planets/planet-14', 'planets/planet-15',
 
     'ships/dark-blue-rocket', 'ships/dark-green-rocket', 'ships/dark-red-rocket', 'ships/dark-yellow-rocket',
     'ships/blue-rocket', 'ships/green-rocket', 'ships/red-rocket', 'ships/yellow-rocket',

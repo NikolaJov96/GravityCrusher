@@ -87,7 +87,6 @@ StateGame = function(data){
     self.createObject('p12', 'spaceBody', 'planets/planet-13');
     self.createObject('p13', 'spaceBody', 'planets/planet-14');
     self.createObject('p14', 'spaceBody', 'planets/planet-15');
-    self.createObject('p15', 'spaceBody', 'planets/planet-16');
 
     self.createObject('rd0', 'ship', 'ships/dark-blue-rocket');
     self.createObject('rd1', 'ship', 'ships/dark-green-rocket');

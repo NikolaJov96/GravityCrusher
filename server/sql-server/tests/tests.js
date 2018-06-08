@@ -1,10 +1,14 @@
-// Owner: Filip Mandic (mandula8)
+// Owner: Filip Mandic 2015/0308 (mandula8)
 
-// Summary: This file contains tests which are used to test database and all queries written to this date
-// File will be used and modified only by the owner
+// Summary: This file contains tests for databse
 
 var db = require('./../database-interface');
 
+/**
+* in this file are same test samples for testing db through db interface
+* tests are good but should not be run all at once because same depend on same data(should be changed in next version)
+* 
+*/
 tests = {
     insertUser: function(){
         var fun = 'test Insert new user';

@@ -1,8 +1,8 @@
-// Owner: Filip Mandic (mandula8)
+// Owner: Filip Mandic 2015/0308 (mandula8)
 
-// Summary: All the mySQL queries used in application
-
-//find - when more than one table
+/**
+*Summary: Dictionary with all the mySQL queries used in application
+*/
 
 module.exports = {
 
