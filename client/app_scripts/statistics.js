@@ -19,15 +19,25 @@ var drawTable = function(rows){
     for (var i in columns) innerTable += '<th scope="col">' + columns[i] + '</th>';
     innerTable += '</tr></thead><tbody>';
     startIndex = rows[0][columns[0]];
-    for (var i in rows){
+    var i = 0;
+    while (i < rows.length){
         innerTable += '<tr>';
         for (var j in columns){
             innerTable += '<td ' + (i === 0 ? 'scope="row"' : '') + '>';
             if (typeof rows[i][columns[j]] === 'string') innerTable += rows[i][columns[j]];
-            else innerTable += ( rows[i][columns[j]] % 1 == 0 ? rows[i][columns[j]] : parseFloat(rows[i][columns[j]]).toFixed(3) );
+            else innerTable += ( rows[i][columns[j]] % 1 == 0 ? rows[i][columns[j]] : parseFloat(rows[i][columns[j]]).toFixed(2) );
             innerTable += '</td>';
         }
         innerTable += '</tr>';
+        i++;
+    }
+    while (i < 10){
+        innerTable += '<tr>';
+        for (var j in columns){
+            innerTable += '<td ' + (i === 0 ? 'scope="row"' : '') + '>-</td>';
+        }
+        innerTable += '</tr>';
+        i++;
     }
     innerTable += '</tbody>';
     table.innerHTML = innerTable;

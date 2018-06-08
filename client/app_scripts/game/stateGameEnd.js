@@ -22,7 +22,7 @@ StateGameEnd = function(data){
     self.createObject('red', 'ship', 'ships/red-rocket');
     
     // UI update
-    surrenderBtn.innerHTML = 'Return to web site';
+    surrenderBtn.innerHTML = 'Return to home';
     surrenderBtn.onclick = function(){
         window.location = 'index';
     };
