@@ -14,6 +14,8 @@ const MAX_HEALTH = 100;
 const TILT_DIFF = Math.PI / 12.0;
 const TILT_COEF = Math.sin(-TILT_DIFF);
 const X_DISP = width * 0.8;
+const MISSILE_TYPE_BULLET = 2;
+const MISSILE_TYPE_BOMB = 0;
 
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
@@ -65,6 +67,7 @@ module.exports = function(gameRoom){
         self.players[i].coolDown = 0.0;
         self.players[i].bulletCo = 0;
         self.players[i].coolDown2 = 0.0;
+        self.players[i].bombCoolDown = 0.0;
     }
 
     logMsg('Room ' + self.room.name + ' is in game state.');
@@ -115,6 +118,7 @@ module.exports = function(gameRoom){
             if ('left' in comms[i]) self.players[i].left = comms[i].left;
             if ('right' in comms[i]) self.players[i].right = comms[i].right;
             if ('fire' in comms[i]) self.players[i].fire = comms[i].fire;
+            if ('bomb' in comms[i]) self.players[i].bomb = comms[i].bomb;
             if ('leftTilt' in comms[i]) self.players[i].leftTilt = comms[i].leftTilt;
             if ('rightTilt' in comms[i]) self.players[i].rightTilt = comms[i].rightTilt;
         }
@@ -166,7 +170,8 @@ module.exports = function(gameRoom){
                             x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
                             y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
                             tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,
-                            id: Math.floor(Math.random() * 4),
+                            // id: Math.floor(Math.random() * 4),
+                            id: MISSILE_TYPE_BULLET,
                             radius: width / 100.0,
                             velocity: 0.3,
                         });
@@ -175,6 +180,21 @@ module.exports = function(gameRoom){
                             self.players[i].bulletCo = 0;
                         }
                     }
+                }
+            }
+
+            if (self.players[i].bomb){
+                if (self.players[i].bombCoolDown < currentTime){
+                    self.players[i].bombCoolDown = currentTime + 4000;
+                    var factor = (i === 0) ? -1 : 1;
+                    self.bullets.push({
+                        x: self.players[i].x - PLAYER_TILT_RADIUS * factor * Math.sin(self.players[i].tilt),
+                        y: self.players[i].y - PLAYER_TILT_RADIUS * factor * Math.cos(self.players[i].tilt),
+                        tilt: factor * self.players[i].tilt * ((i === 0) ? 1 : -0.5) + Math.PI * (1 + factor) / 2.0,
+                        id: MISSILE_TYPE_BOMB,
+                        radius: width / 100.0,
+                        velocity: 0.25,
+                    });
                 }
             }
         }
@@ -197,9 +217,13 @@ module.exports = function(gameRoom){
 
             if (collisionPlayer(self.bullets[i], self.players[0], self)) {
                 //maybe draw explosion and stop game for a second
+                if (self.bullets[i].id === MISSILE_TYPE_BULLET){
+                    self.players[0].health -= 1;
+                } else {
+                    self.players[0].health -= MAX_HEALTH * 0.75;
+                }
                 self.bullets.splice(i, 1);
-                self.players[0].health--;
-                if (self.players[0].health === 0) {
+                if (self.players[0].health <= 0) {
                     self.winner = 'join';
                     self.gameEnd = true;
                     logMsg("Join won");
@@ -209,9 +233,13 @@ module.exports = function(gameRoom){
 
             if (collisionPlayer(self.bullets[i], self.players[1], self)) {
                 //maybe draw explosion and stop game for a second
+                if (self.bullets[i].id === MISSILE_TYPE_BULLET){
+                    self.players[1].health -= 1;
+                } else {
+                    self.players[1].health -= MAX_HEALTH * 0.75;
+                }
                 self.bullets.splice(i, 1);
-                self.players[1].health--;
-                if (self.players[1].health === 0) {
+                if (self.players[1].health <= 0) {
                     self.winner = 'host';
                     self.gameEnd = true;
                     logMsg("Host won");
