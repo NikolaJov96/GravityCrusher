@@ -4,7 +4,7 @@
 
 StateGame = function(data){
     // state initialization
-    console.log('current state: game - move using w a s d');
+    console.log('current state: game - move using a, s, d, j, k and l');
     self = abstractState();
     self.role = data.role;
     self.hostName = data.host;
@@ -27,6 +27,7 @@ StateGame = function(data){
     }
     self.hostActive = data.hostActive;
     self.joinActive = data.joinActive;
+    self.gameTimer = data.gameTimer;
     self.players = [ {}, {} ];
     for (var i = 0; i < 2; i++){
         for (var i = 0; i < 2; i++){
@@ -115,6 +116,17 @@ StateGame = function(data){
             return false;
         };
     }
+    pl1.innerHTML = self.hostName;
+    pl2.innerHTML = self.joinName;
+    middle.innerHTML = Math.floor(self.gameTimer / 1000 / 60) + ':' + Math.floor(self.gameTimer / 1000) % 60;
+    if (self.role !== 'join'){
+        pl1.style.color = 'green';
+        pl2.style.color = 'red';
+    }else{
+        pl1.style.color = 'red';
+        pl2.style.color = 'green';
+    }
+    middle.style.color = 'white';
 
     // init projection and view matrices used throughout this roomState
     mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0,
@@ -132,7 +144,7 @@ StateGame = function(data){
         else{
             self.hostActive = data.hostActive;
             self.joinActive = data.joinActive;
-            self.counter = data.counter;
+            self.gameTimer = data.gameTimer;
             if ('starData' in data && data.stars.length > 0){
                 self.starPos[0] = data.stars[0].x;
                 self.starPos[1] = data.stars[0].y;
@@ -194,6 +206,7 @@ StateGame = function(data){
             bomb: self.pressed[5],
             surrender: self.surrender
         });
+        middle.innerHTML = Math.floor(self.gameTimer / 1000 / 60) + ':' + Math.floor(self.gameTimer / 1000) % 60;
     };
 
     self.draw = function(){

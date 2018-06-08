@@ -4,8 +4,13 @@
 
 var canvas = document.getElementById('myCanvas');
 var gl = canvas.getContext('webgl');
+
 var overlayRemoved = false;
 var overlay = document.getElementById('overlay');
+
+var pl1 = document.getElementById('pl1');
+var middle = document.getElementById('middle');
+var pl2 = document.getElementById('pl2');
 
 // default values used as parameters when loading an image as a texture
 var texParams = {

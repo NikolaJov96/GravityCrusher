@@ -26,6 +26,26 @@ StateGameEnd = function(data){
     surrenderBtn.onclick = function(){
         window.location = 'index';
     };
+    pl1.innerHTML = self.hostName;
+    pl2.innerHTML = self.joinName;
+    if (self.winner === ''){
+        middle.style.color = 'white';
+        middle.innerHTML = 'TIE';
+    }else if (self.winner === self.role){
+        middle.style.color = 'green';
+        middle.innerHTML = 'WIN';
+    }else{
+        middle.style.color = 'red';
+        middle.innerHTML = 'LOST';
+    }
+    
+    if (self.role !== 'join'){
+        pl1.style.color = 'green';
+        pl2.style.color = 'red';
+    }else{
+        pl1.style.color = 'red';
+        pl2.style.color = 'green';
+    }
     
     // init projection and view matrices used throughout this roomState
     mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0, 

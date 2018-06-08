@@ -305,6 +305,7 @@ module.exports = function(gameRoom){
         var gameState = {
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
+            gameTimer: self.gameTimer,
             players: [
                 {
                     x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt,

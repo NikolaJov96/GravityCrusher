@@ -32,6 +32,16 @@ StateLoading = function(data){
             return false;
         };
     }
+    pl1.innerHTML = self.hostName;
+    pl2.innerHTML = self.joinName;
+    middle.innerHTML = 'VS';
+    if (self.role !== 'join'){
+        pl1.style.color = 'green';
+        pl2.style.color = 'red';
+    }else{
+        pl1.style.color = 'red';
+        pl2.style.color = 'green';
+    }
     
     // init projection and view matrices used throughout this roomState
     mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0, 
