@@ -44,11 +44,18 @@ StateGame = function(data){
     }
     self.bullets = [];
     self.stars = [];
-    for (var i = 0; i < 10; i++){
+    for (var i = 0; i < 100; i++){
         self.stars.push({
             translation: [Math.random() * screen.w, Math.random() * screen.h, -20.0],
             rotation: Math.random() * Math.PI * 2.0,
             id: Math.floor(Math.random() * 3)
+        });
+    }
+    for (var i = 0; i < 4; ++i){ // add several of shooting stars
+        self.stars.push({
+            translation: [Math.random() * screen.w, Math.random() * screen.h, -20.0],
+            rotation: Math.random() * Math.PI * 2.0,
+            id: 3
         });
     }
 
@@ -94,6 +101,7 @@ StateGame = function(data){
     self.createObject('sw0', 'spaceBody', 'stars/star-1-w');
     self.createObject('sw1', 'spaceBody', 'stars/star-2-w');
     self.createObject('sw2', 'spaceBody', 'stars/star-3-w');
+    self.createObject('sw3', 'spaceBody', 'stars/shooting-star-white');
     self.createObject('sy0', 'spaceBody', 'stars/star-1-y');
     self.createObject('sy1', 'spaceBody', 'stars/star-2-y');
     self.createObject('sy2', 'spaceBody', 'stars/star-3-y');
@@ -181,7 +189,11 @@ StateGame = function(data){
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.stars[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.1, 0.1, 0.1]);
+            if (self.stars[i].id == 3){ // shooting star
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.1]);
+            } else{
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.06, 0.06, 0.1]);
+            }
             //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
             self.objs['sw' + self.stars[i].id].draw();
         }
@@ -241,11 +253,11 @@ StateGame = function(data){
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.bullets[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            if (self.bullets[i].id === 0){
-                mat4.scale(self.tranMatrix, self.tranMatrix, [0.2, 0.4, 1.0]);
+            if (self.bullets[i].id === 0){ // if missle is a bomb
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 1.0]);
             }
             else{
-                mat4.scale(self.tranMatrix, self.tranMatrix, [0.1, 0.2, 1.0]);
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.08, 0.16, 1.0]);
             }
             self.objs['m' + self.bullets[i].id].draw();
         }

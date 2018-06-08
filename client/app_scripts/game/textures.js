@@ -67,5 +67,6 @@ var textureList = [
 
     'stars/star-1-w', 'stars/star-2-w', 'stars/star-3-w',
     'stars/star-1-y', 'stars/star-2-y', 'stars/star-3-y',
+    'stars/shooting-star-white',
 
 ];
