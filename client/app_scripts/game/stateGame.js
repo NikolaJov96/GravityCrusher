@@ -19,9 +19,9 @@ StateGame = function(data){
         newPlanet.translation = [
             (self.role !== 'join' ? screen.w - data.planets[i].x * self.prop.w : data.planets[i].x * self.prop.w),
             (self.role !== 'join' ? screen.h - data.planets[i].y * self.prop.h : data.planets[i].y * self.prop.h),
-            0.0
+            Math.random()
         ];
-        newPlanet.radius = data.planets[i].radius;
+        newPlanet.radius = data.planets[i].radius * self.prop.w / 100.0;
         newPlanet.id = data.planets[i].id;
         self.planets.push(newPlanet);
     }
@@ -43,6 +43,7 @@ StateGame = function(data){
         else self.players[1].rotation = (self.players[1].rotation + Math.PI) % (Math.PI * 2.0);
     }
     self.bullets = [];
+    self.effects = [];
     self.stars = [];
     for (var i = 0; i < 100; i++){
         self.stars.push({
@@ -58,7 +59,6 @@ StateGame = function(data){
             id: 3
         });
     }
-
     self.pressed = [false, false, false, false, false, false];
     self.surrender = false;
 
@@ -67,10 +67,12 @@ StateGame = function(data){
     self.createObject('red',   'spaceBody', 'red'  );
 
     // add all taxtures
+    
     self.createObject('m0', 'spaceBody', 'missles/rocket');
     self.createObject('m1', 'spaceBody', 'missles/missle-green');
     self.createObject('m2', 'spaceBody', 'missles/missle-red');
     self.createObject('m3', 'spaceBody', 'missles/missle-yellow');
+    self.createObject('exp', 'spaceBody', 'missles/explosion');
 
     self.createObject('p0', 'spaceBody', 'planets/planet-1');
     self.createObject('p1', 'spaceBody', 'planets/planet-2');
@@ -164,6 +166,21 @@ StateGame = function(data){
                     self.bullets.push(newBullet);
                 }
             }
+            if ('effects' in data){
+                self.effects = [];
+                for (var i in data.effects){
+                    var newEffect = {};
+                    newEffect.translation = [
+                        (self.role !== 'join' ? screen.w - data.effects[i].x * self.prop.w : data.effects[i].x * self.prop.w),
+                        (self.role !== 'join' ? screen.h - data.effects[i].y * self.prop.h : data.effects[i].y * self.prop.h),
+                        20.0
+                    ];
+                    newEffect.rotation =
+                        (self.role !== 'join' ? (data.effects[i].tilt + Math.PI) % (Math.PI * 2.0) : data.effects[i].tilt);
+                    newEffect.radius = data.effects[i].radius;
+                    self.effects.push(newEffect);
+                }
+            }
         }
     };
 
@@ -188,23 +205,20 @@ StateGame = function(data){
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.stars[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            if (self.stars[i].id == 3){ // shooting star
-                mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.1]);
+            if (self.stars[i].id === 3){ // shooting star
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.2, 0.2, 1.0]);
             } else{
-                mat4.scale(self.tranMatrix, self.tranMatrix, [0.06, 0.06, 0.1]);
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.03, 0.03, 1.0]);
             }
-            //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
             self.objs['sw' + self.stars[i].id].draw();
         }
 
         // draw planets
         for (var i in self.planets){
             mat4.fromTranslation(self.tranMatrix, self.planets[i].translation);
-            //mat4.rotate(self.tranMatrix, self.tranMatrix, self.planets[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [1.0, 1.0, 1.0]);
-            //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [self.planets[i].radius, self.planets[i].radius, 1.0]);
             self.objs['p' + self.planets[i].id].draw();
         }
 
@@ -213,12 +227,12 @@ StateGame = function(data){
             // draw ship
             mat4.fromTranslation(self.tranMatrix, self.players[i].translation);
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].roll,
-                        [Math.cos(self.players[i].rotation + Math.PI/2), Math.sin(self.players[i].rotation + Math.PI/2), 0.0]);
+                        [Math.cos(self.players[i].rotation + Math.PI/2),
+                         Math.sin(self.players[i].rotation + Math.PI/2), 0.0]);
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
             mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.4]);
-            //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
             if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)) self.objs.r1.draw();
             else self.objs.r2.draw();
 
@@ -229,19 +243,17 @@ StateGame = function(data){
                 barX = screen.w - barX;
                 barY = screen.h - barY;
             }
-
             // draw background
             mat4.fromTranslation(self.tranMatrix, [barX, barY, 20.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [1.1, 0.22, 1.0]);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.6, 0.11, 1.0]);
             self.objs.white.draw();
-
             // draw foreground
             mat4.fromTranslation(self.tranMatrix, [barX, barY, 21.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [1.0 * self.players[i].health, 0.2, 1.0]);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.58 * self.players[i].health, 0.1, 1.0]);
             if (self.players[i].health >= 0.3) self.objs.green.draw();
             else self.objs.red.draw();
         }
@@ -253,12 +265,22 @@ StateGame = function(data){
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
             if (self.bullets[i].id === 0){ // if missle is a bomb
-                mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 1.0]);
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.2, 0.2, 1.0]);
             }
             else{
-                mat4.scale(self.tranMatrix, self.tranMatrix, [0.08, 0.16, 1.0]);
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.04, 0.08, 1.0]);
             }
             self.objs['m' + self.bullets[i].id].draw();
+        }
+        
+        // draw effects
+        for (var i in self.effects){
+            mat4.fromTranslation(self.tranMatrix, self.effects[i].translation);
+            mat4.rotate(self.tranMatrix, self.tranMatrix, self.effects[i].rotation, [0.0, 0.0, 1.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [self.effects[i].radius, self.effects[i].radius, 1.0]);
+            self.objs.exp.draw();
         }
     };
 

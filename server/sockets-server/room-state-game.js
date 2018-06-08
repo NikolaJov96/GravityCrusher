@@ -16,6 +16,7 @@ const TILT_COEF = Math.sin(-TILT_DIFF);
 const X_DISP = width * 0.8;
 const MISSILE_TYPE_BULLET = 2;
 const MISSILE_TYPE_BOMB = 0;
+const GAME_DURATION_MS = 1000.0 * 60 * 5;
 
 var RoomStateGameEnd = require('./room-state-game-end.js');
 var db = require('../sql-server/database-interface.js');
@@ -29,10 +30,11 @@ var collisionPlayer = collisionDetection.bulletPlayer;
 module.exports = function(gameRoom){
     var self = {
         room: gameRoom,
-        //TODO: max game duration
+        gameTimer: GAME_DURATION_MS,
         players: [ {}, {} ],
         planets: [],
         bullets: [],
+        effects: [],
         width: width,
         height: height,
         time: new Date().getTime(),
@@ -42,12 +44,14 @@ module.exports = function(gameRoom){
     };
 
     for (var i in gameRoom.planets) {
-        self.planets[i] = { x: gameRoom.planets[i].PositionX,
-                            y: gameRoom.planets[i].PositionY,
-                            radius: Math.floor(Math.pow(gameRoom.planets[i].Mass, 1.0 / 3)
-                                                    * MASS_TO_V + Math.random() * radiusRandFactor - radiusRandStart),
-                            id : Math.floor(Math.random() * 15)
-                        }
+        self.planets[i] = { 
+            x: gameRoom.planets[i].PositionX,
+            y: gameRoom.planets[i].PositionY,
+            radius: Math.floor(
+                Math.pow(gameRoom.planets[i].Mass, 1.0 / 3) * 
+                MASS_TO_V + Math.random() * radiusRandFactor - radiusRandStart) * width / 80.0,
+            id : Math.floor(Math.random() * 15)
+        }
         self.planets[i].Mass = gameRoom.planets[i].Mass;
     }
 
@@ -73,7 +77,6 @@ module.exports = function(gameRoom){
     logMsg('Room ' + self.room.name + ' is in game state.');
 
     self.initResponse = function(user){
-        // TODO -- treba poslati i sve slike zajedno sa ovim podacima
         var ret = {
             screen: {w: width, h: height},
             state: 'game',
@@ -85,6 +88,7 @@ module.exports = function(gameRoom){
             planets: self.planets,
             hostActive: (self.room.host.page === 'Game' ? true : false),
             joinActive: (self.room.join.page === 'Game' ? true : false),
+            gameTimer: self.gameTimer,
             players: [
                 {
                     x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt,
@@ -110,6 +114,9 @@ module.exports = function(gameRoom){
         var currentTime = new Date().getTime();
         var dt = currentTime - self.time;
         self.time = currentTime;
+        
+        self.gameTimer -= dt;
+        if (self.gameTimer < 0.0) self.gameEnd = true;
 
         var ret = { action: null };
 
@@ -219,13 +226,16 @@ module.exports = function(gameRoom){
                 continue;
             }
 
-            if (collisionPlayer(self.bullets[i], self.players[0], self)) {
-                //maybe draw explosion and stop game for a second
+            if (collisionPlayer(self.bullets[i], self.players[0], self)){
+                var effect = { x: self.bullets[i].x, y: self.bullets[i].y, tilt: Math.random() * Math.PI * 2.0 };
                 if (self.bullets[i].id === MISSILE_TYPE_BULLET){
                     self.players[0].health -= 1;
+                    effect.timeout = 250;
                 } else {
                     self.players[0].health -= MAX_HEALTH * 0.75;
+                    effect.timeout = 1000;
                 }
+                self.effects.push(effect);
                 self.bullets.splice(i, 1);
                 if (self.players[0].health <= 0) {
                     self.winner = 'join';
@@ -235,13 +245,16 @@ module.exports = function(gameRoom){
                 continue;
             }
 
-            if (collisionPlayer(self.bullets[i], self.players[1], self)) {
-                //maybe draw explosion and stop game for a second
+            if (collisionPlayer(self.bullets[i], self.players[1], self)){
+                var effect = { x: self.bullets[i].x, y: self.bullets[i].y, tilt: Math.random() * Math.PI * 2.0 };
                 if (self.bullets[i].id === MISSILE_TYPE_BULLET){
                     self.players[1].health -= 1;
+                    effect.timeout = 250;
                 } else {
                     self.players[1].health -= MAX_HEALTH * 0.75;
+                    effect.timeout = 1000;
                 }
+                self.effects.push(effect);
                 self.bullets.splice(i, 1);
                 if (self.players[1].health <= 0) {
                     self.winner = 'host';
@@ -256,7 +269,9 @@ module.exports = function(gameRoom){
             var doContinue = false;
             while(j--) {
                 if (collisionCircle(self.bullets[i], self.planets[j])) {
-                    //maybe draw explosion
+                    self.effects.push({ 
+                        x: self.bullets[i].x, y: self.bullets[i].y, tilt: Math.random() * Math.PI * 2.0, timeout: 200
+                    });
                     self.bullets.splice(i, 1);
                     doContinue = true;
                     break;
@@ -267,12 +282,22 @@ module.exports = function(gameRoom){
             j = self.bullets.length;
             while(j--) {
                 if ((i !== j) && (collisionCircle(self.bullets[i], self.bullets[j]))) {
-                    //maybe draw explosion
+                    self.effects.push({ 
+                        x: self.bullets[i].x, y: self.bullets[i].y, tilt: Math.random() * Math.PI * 2.0, timeout: 200
+                    });
                     self.bullets.splice(i, 1);
                     self.bullets.splice(j, 1);
                     if (j < i) i--;
                     break;
                 }
+            }
+        }
+        
+        i = self.effects.length;
+        while(i--) {
+            self.effects[i].timeout -= dt;
+            if (self.effects[i].timeout < 0.0) {
+                self.effects.splice(i, 1);
             }
         }
 
@@ -283,14 +308,17 @@ module.exports = function(gameRoom){
             players: [
                 {
                     x: self.players[0].x, y: self.players[0].y, tilt: self.players[0].tilt,
-                    roll: self.players[0].roll,  health: 1.0 * self.players[0].health / MAX_HEALTH
+                    roll: self.players[0].roll, health: 1.0 * self.players[0].health / MAX_HEALTH
                 },
                 {
                     x: self.players[1].x, y: self.players[1].y, tilt: self.players[1].tilt,
                     roll: self.players[1].roll, health: 1.0 * self.players[1].health / MAX_HEALTH
                 }
             ],
-            bullets: self.bullets
+            bullets: self.bullets,
+            effects: self.effects.map(e => { return {
+                x: e.x, y: e.y, tilt: e.tilt, radius: e.timeout / 1000.0 * width / 400.0 
+            };})
         };
         if (self.room.host.socket && self.room.host.page === 'Game'){
             self.room.host.socket.emit('gameState', gameState);
@@ -306,8 +334,14 @@ module.exports = function(gameRoom){
 
         // TODO: different end game logic
         if (self.gameEnd){
-            if (!self.room.host.isGuest) db.insertStatisticsForPlayer(self.room.hostName, "Won", null);
-            if (!self.room.join.isGuest) db.insertStatisticsForPlayer(self.room.joinName, "Lost", null);
+            if (!self.room.host.isGuest){
+                if (self.winner === 'host') db.insertStatisticsForPlayer(self.room.hostName, "Won", null);
+                else db.insertStatisticsForPlayer(self.room.hostName, "Lost", null);
+            }
+            if (!self.room.join.isGuest){
+                if (self.winner === 'join') db.insertStatisticsForPlayer(self.room.joinName, "Won", null);
+                else db.insertStatisticsForPlayer(self.room.joinName, "Lost", null);
+            }
             self.room.winner = self.winner;
             ret.action = 'nextState';
             logMsg('Room ' + self.room.name + ' game state finished.');

@@ -3,7 +3,7 @@
 // Summary: Helper methods for calculations related to gravitational
 //          effects on bullets.
 
-const BULLET_MASS = 1;
+const BULLET_MASS = 0.7;
 
 module.exports = {
 

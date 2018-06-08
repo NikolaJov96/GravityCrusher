@@ -52,7 +52,7 @@ var textureList = [
 
     'missles/missle-blue', 'missles/missle-green',
     'missles/missle-red', 'missles/missle-yellow',
-    'missles/rocket',
+    'missles/rocket', 'missles/explosion',
 
     /*'backgrounds/background-1', 'backgrounds/background-2',
     'backgrounds/background-3', 'backgrounds/background-4',*/
