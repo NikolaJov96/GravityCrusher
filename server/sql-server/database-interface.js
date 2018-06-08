@@ -1,4 +1,4 @@
-// Owner: Filip Mandic (mandula8)
+// Owner: Filip Mandic 2015/0308 (mandula8)
 
 // Summary: Database object methods to work with database
 
