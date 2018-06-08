@@ -17,15 +17,18 @@ var bannBtn4 = document.getElementById('bannBtn4');
 var errorLabel = document.getElementById('errorLabel');
 
 document.onkeydown = function(event){
-    if (roomState) roomState.onKeyDown(event);
+    if (roomState && !(chatText === document.activeElement)
+       && !(chatBtn === document.activeElement)) roomState.onKeyDown(event);
 };
 
 document.onkeyup = function(event){
-    if (roomState) roomState.onKeyUp(event);
+    if (roomState && !(chatText === document.activeElement)
+       && !(chatBtn === document.activeElement)) roomState.onKeyUp(event);
 };
 
 document.onkeypress = function(event){
-    if (roomState) roomState.onKeyPress(event);
+    if (roomState && !(chatText === document.activeElement)
+       && !(chatBtn === document.activeElement)) roomState.onKeyPress(event);
 };
 
 var banOverlay = function(username){

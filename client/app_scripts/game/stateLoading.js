@@ -14,11 +14,15 @@ StateLoading = function(data){
     self.joinActive = data.joinActive;
     self.joinReady = data.joinReady;
     self.counter = data.counter;
+    self.hostPosition = -screen.w * 0.5;
+    self.joinPosition = screen.w * 1.5;
     
     // init ship shape
-    self.createObject('ship', 'ship', 'ship');
-    self.createObject('shipg', 'ship', 'ship-g');
-    self.createObject('shipr', 'ship', 'ship-r');
+    self.createObject('darkGreen', 'ship', 'ships/dark-green-rocket');
+    self.createObject('darkRed', 'ship', 'ships/dark-red-rocket');
+    self.createObject('green', 'ship', 'ships/green-rocket');
+    self.createObject('red', 'ship', 'ships/red-rocket');
+    self.createObject('blue', 'ship', 'ships/blue-rocket');
     
     // UI update
     if (self.role === 'host'){
@@ -34,7 +38,7 @@ StateLoading = function(data){
                screen.h / 2.0, -screen.h / 2.0, 0, 1000);
     mat4.lookAt(self.viewMatrix, [screen.w / 2.0, screen.h / 2.0, 200], 
                 [screen.w / 2.0, screen.h / 2.0, 0], [0, 1, 0]);
-    self.lightSource = new Float32Array([0.0, 0.0, 500.0]);
+    self.lightSource = new Float32Array([screen.w / 2.0, 0.0, 120.0]);
     self.ambientColor = new Float32Array([0.5, 0.5, 0.5]);
     self.directedColor = new Float32Array([0.5, 0.5, 0.5]);
     
@@ -62,78 +66,67 @@ StateLoading = function(data){
         }
     };
     
+    self.step = function(){
+        if (self.activePosition < screen.w * 0.25) self.activePosition += screen.w * 0.03;
+        
+        if (self.hostReady || self.hostActive){
+            if (self.hostPosition < screen.w * 0.25) self.hostPosition += screen.w * 0.04;
+        }else{
+            if (self.hostPosition > -screen.w * 0.25) self.hostPosition -= screen.w * 0.04;
+        }
+        
+        if (self.joinReady || self.joinActive){
+            if (self.joinPosition > screen.w * 0.75) self.joinPosition -= screen.w * 0.04;
+        }else{
+            if (self.joinPosition < screen.w * 1.25) self.joinPosition += screen.w * 0.04;
+        }
+    };
+    
     self.draw = function(){
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
         
         // draw host ship
-        mat4.fromTranslation(self.tranMatrix, [screen.w * 0.25, screen.h * 0.25, 0.0]);
+        mat4.fromTranslation(self.tranMatrix, [self.hostPosition, screen.h * 0.4, 0.0]);
+        mat4.rotate(self.tranMatrix, self.tranMatrix, -Math.PI / 2.0, [0.0, 0.0, 1.0]);
         mat4.invert(self.normMatrix, self.tranMatrix);
         mat4.transpose(self.normMatrix, self.normMatrix);
-        mat4.scale(self.tranMatrix, self.tranMatrix, [0.5, 0.5, 0.5]);
-        if (self.role === 'join') self.objs.shipr.draw();
-        else self.objs.shipg.draw();
-        
-        // draw host ship active indicatior
-        if (self.hostActive){
-            mat4.fromTranslation(self.tranMatrix, [screen.w * 0.25, screen.h * 0.5, 0.0]);
-            mat4.invert(self.normMatrix, self.tranMatrix);
-            mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.4]);
-            self.objs.ship.draw();
-        }
-        
-        // draw host ship ready indicatior
-        if (self.hostReady){
-            mat4.fromTranslation(self.tranMatrix, [screen.w * 0.25, screen.h * 0.75, 0.0]);
-            mat4.invert(self.normMatrix, self.tranMatrix);
-            mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.4]);
-            self.objs.ship.draw();
+        mat4.scale(self.tranMatrix, self.tranMatrix, [1.2, 1.2, 1.2]);
+        if (self.role === 'join'){
+            if (self.hostReady) self.objs.red.draw();
+            else self.objs.darkRed.draw();
+        }else{
+            if (self.hostReady) self.objs.green.draw();
+            else self.objs.darkGreen.draw();
         }
         
         // draw join ship
-        mat4.fromTranslation(self.tranMatrix, [screen.w * 0.75, screen.h * 0.25, 0.0]);
-        mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI, [0.0, 0.0, 1.0]);
+        mat4.fromTranslation(self.tranMatrix, [self.joinPosition, screen.h * 0.6, 0.0]);
+        mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI / 2.0, [0.0, 0.0, 1.0]);
         mat4.invert(self.normMatrix, self.tranMatrix);
         mat4.transpose(self.normMatrix, self.normMatrix);
-        mat4.scale(self.tranMatrix, self.tranMatrix, [0.5, 0.5, 0.5]);
-        if (self.role === 'join') self.objs.shipg.draw();
-        else self.objs.shipr.draw();
-        
-        // draw join ship active indicator
-        if (self.joinActive){
-            mat4.fromTranslation(self.tranMatrix, [screen.w * 0.75, screen.h * 0.5, 0.0]);
-            mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI, [0.0, 0.0, 1.0]);
-            mat4.invert(self.normMatrix, self.tranMatrix);
-            mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.4]);
-            self.objs.ship.draw();
-        }
-        
-        // draw join ship ready indicator
-        if (self.joinReady){
-            mat4.fromTranslation(self.tranMatrix, [screen.w * 0.75, screen.h * 0.75, 0.0]);
-            mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI, [0.0, 0.0, 1.0]);
-            mat4.invert(self.normMatrix, self.tranMatrix);
-            mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.4]);
-            self.objs.ship.draw();
+        mat4.scale(self.tranMatrix, self.tranMatrix, [1.2, 1.2, 1.2]);
+        if (self.role === 'join'){
+            if (self.joinReady) self.objs.green.draw();
+            else self.objs.darkGreen.draw();
+        }else{
+            if (self.joinReady) self.objs.red.draw();
+            else self.objs.darkRed.draw();
         }
         
         // draw counter
         for (var i = 1; i < self.counter; i++){
-            mat4.fromTranslation(self.tranMatrix, [screen.w * 0.5, screen.h * (i + 1) / 12.0, 0.0]);
-            mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI * 1.5, [0.0, 0.0, 1.0]);
+            mat4.fromTranslation(self.tranMatrix, [screen.w * (0.56 - 0.01 * i), screen.h * (i + 1) / 12.0, 0.0]);
+            mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
             mat4.scale(self.tranMatrix, self.tranMatrix, [0.2, 0.2, 0.2]);
-            self.objs.ship.draw();
+            self.objs.blue.draw();
         }
     };
     
     self.onKeyPress = function(event){
-        // on space pressed change ready status
-        if (event.key === ' '){
+        // on press change ready status
+        if ([' ', 'Enter', 's', 'r'].includes(event.key)){
             if (self.role === 'host') socket.emit('gameCommand', { ready: (self.hostReady ? false : true) });
             else if (self.role === 'join') socket.emit('gameCommand', { ready: (self.joinReady ? false : true) });
             else logMsg('Undefined role: ' + self.role);
