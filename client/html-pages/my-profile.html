@@ -34,7 +34,7 @@
         <div class="container">
             <div class="navbar-translate">
                 <a class="navbar-brand" href="/">
-                    <img src="../img/atuin-logo.png" style="margin-top: -25px;">
+                    <img src="../img/rocket-logo.png" style="margin-top: -5px; height: 60px;">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -105,10 +105,18 @@
                         <h5>Your account settings:</h5>
                     </div>
                     <div class="row" style="display: flex; justify-content: center;">
-                        <a href="/"><button id="deactivateBtn" type="button" class="btn btn-danger mr-sm-4" type="button">Deactive Profile</button></a>
-                        <a href="change-password"><button type="button" class="btn btn-danger mr-sm-4" type="button">Change Password</button></a>
-                        <a href="change-username"><button type="button" class="btn btn-danger mr-sm-4" type="button">Change Username</button></a>
-                        <button id="chAvatar" type="button" class="btn btn-danger mr-sm-4" type="button">Change Avatar</button>
+                        <div class="col-12 col-sm-6">
+                            <a href="/"><button id="deactivateBtn" type="button" class="btn btn-danger btn-block" type="button">Deactive Profile</button></a>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <a href="change-password"><button type="button" class="btn btn-danger btn-block" type="button">Change Password</button></a>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <a href="change-username"><button type="button" class="btn btn-danger btn-block" type="button">Change Username</button></a>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <a href="#"><button id="chAvatar" type="button" class="btn btn-danger btn-block" type="button">Change Avatar</button></a>
+                        </div>
                         <input id="image" type="file" style="display: none" accept="image/png,image/jpeg" />
                     </div>
                 </div>
@@ -119,8 +127,9 @@
         <div class="container">
             <div class="copyright pull-right">
                 <p style="color: white; margin-right: 10px;">    
-                    2018 made with <i class="material-icons" style="color: red;">favorite</i> by A'Tuin
+                    2018 made with <i class="material-icons" style="color: red;">favorite</i> by A'Tuin<img src="../img/atuin-logo.png" style="height: 35px;">
                 </p>
+
             </div>
         </div>
     </footer>
