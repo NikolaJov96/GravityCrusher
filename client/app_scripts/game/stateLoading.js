@@ -67,8 +67,6 @@ StateLoading = function(data){
     };
     
     self.step = function(){
-        if (self.activePosition < screen.w * 0.25) self.activePosition += screen.w * 0.03;
-        
         if (self.hostReady || self.hostActive){
             if (self.hostPosition < screen.w * 0.25) self.hostPosition += screen.w * 0.04;
         }else{

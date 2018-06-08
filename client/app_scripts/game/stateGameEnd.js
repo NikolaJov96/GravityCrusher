@@ -12,11 +12,18 @@ StateGameEnd = function(data){
     self.joinName = data.join;
     self.joinActive = data.joinActive;
     self.winner = data.winner;
+    self.hostPosition = -screen.w * 0.5;
+    self.joinPosition = screen.w * 1.5;
     
     // init ship shape
     self.createObject('ship', 'ship', 'ship');
     self.createObject('shipg', 'ship', 'ship-g');
     self.createObject('shipr', 'ship', 'ship-r');
+    
+    self.createObject('darkGreen', 'ship', 'ships/dark-green-rocket');
+    self.createObject('darkRed', 'ship', 'ships/dark-red-rocket');
+    self.createObject('green', 'ship', 'ships/green-rocket');
+    self.createObject('red', 'ship', 'ships/red-rocket');
     
     // UI update
     surrenderBtn.innerHTML = 'Return to web site';
@@ -44,49 +51,42 @@ StateGameEnd = function(data){
         }
     };
     
+    self.step = function(){  
+        if (self.hostPosition < screen.w * 0.33) self.hostPosition += screen.w * 0.03;
+        if (self.joinPosition > screen.w * 0.66) self.joinPosition -= screen.w * 0.03;
+    };
+    
     self.draw = function(){
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
         
         // draw host ship
-        mat4.fromTranslation(self.tranMatrix, [screen.w * 0.33, screen.h * 0.5, 0.0]);
-        mat4.rotate(self.tranMatrix, self.tranMatrix, 0, [0.0, 0.0, 1.0]);
+        mat4.fromTranslation(self.tranMatrix, [self.hostPosition, screen.h * 0.4, 0.0]);
+        mat4.rotate(self.tranMatrix, self.tranMatrix, -Math.PI / 2.0, [0.0, 0.0, 1.0]);
         mat4.invert(self.normMatrix, self.tranMatrix);
         mat4.transpose(self.normMatrix, self.normMatrix);
         if (self.winner === 'host') mat4.scale(self.tranMatrix, self.tranMatrix, [1.2, 1.2, 1.2]);
         else mat4.scale(self.tranMatrix, self.tranMatrix, [0.5, 0.5, 0.5]);
-        mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
-        if (self.role === 'join') self.objs.shipr.draw();
-        else self.objs.shipg.draw();
-        
-        // draw host ship active indicator
-        if (self.hostActive){
-            mat4.fromTranslation(self.tranMatrix, [screen.w * 0.33, screen.h * 0.9, 0.0]);
-            mat4.rotate(self.tranMatrix, self.tranMatrix, -Math.PI / 2.0, [0.0, 0.0, 1.0]);
-            mat4.invert(self.normMatrix, self.tranMatrix);
-            mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.3, 0.3, 0.3]);
-            self.objs.ship.draw();
+        if (self.role === 'join'){
+            if (self.hostActive) self.objs.red.draw();
+            else self.objs.darkRed.draw();
+        }else{
+            if (self.hostActive) self.objs.green.draw();
+            else self.objs.darkGreen.draw();
         }
         
         // draw join ship
-        mat4.fromTranslation(self.tranMatrix, [screen.w * 0.66, screen.h * 0.5, 0.0]);
-        mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI, [0.0, 0.0, 1.0]);
+        mat4.fromTranslation(self.tranMatrix, [self.joinPosition, screen.h * 0.6, 0.0]);
+        mat4.rotate(self.tranMatrix, self.tranMatrix, Math.PI / 2.0, [0.0, 0.0, 1.0]);
         mat4.invert(self.normMatrix, self.tranMatrix);
         mat4.transpose(self.normMatrix, self.normMatrix);
         if (self.winner === 'join') mat4.scale(self.tranMatrix, self.tranMatrix, [1.2, 1.2, 1.2]);
         else mat4.scale(self.tranMatrix, self.tranMatrix, [0.5, 0.5, 0.5]);
-        mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
-        if (self.role === 'join') self.objs.shipg.draw();
-        else self.objs.shipr.draw();
-        
-        // draw join ship active indicator
-        if (self.joinActive){
-            mat4.fromTranslation(self.tranMatrix, [screen.w * 0.66, screen.h * 0.9, 0.0]);
-            mat4.rotate(self.tranMatrix, self.tranMatrix, -Math.PI / 2.0, [0.0, 0.0, 1.0]);
-            mat4.invert(self.normMatrix, self.tranMatrix);
-            mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.3, 0.3, 0.3]);
-            self.objs.ship.draw();
+        if (self.role === 'join'){
+            if (self.joinActive) self.objs.green.draw();
+            else self.objs.darkGreen.draw();
+        }else{
+            if (self.joinActive) self.objs.red.draw();
+            else self.objs.darkRed.draw();
         }
     };
     
