@@ -43,6 +43,15 @@ StateGame = function(data){
         else self.players[1].rotation = (self.players[1].rotation + Math.PI) % (Math.PI * 2.0);
     }
     self.bullets = [];
+    self.stars = [];
+    for (var i = 0; i < 10; i++){
+        self.stars.push({
+            translation: [Math.random() * screen.w, Math.random() * screen.h, -20.0],
+            rotation: Math.random() * Math.PI * 2.0,
+            id: Math.floor(Math.random() * 3)
+        });
+    }
+    
     self.pressed = [false, false, false, false, false];
     self.surrender = false;
     
@@ -50,14 +59,7 @@ StateGame = function(data){
     self.createObject('green', 'spaceBody', 'green');
     self.createObject('red',   'spaceBody', 'red'  );
     
-    // init shapes
-    self.createObject('shipg', 'ship', 'ship-g');
-    self.createObject('shipr', 'ship', 'ship-r');
-    self.createObject('star', 'spaceBody', 'star');
     // add all taxtures
-    /*'backgrounds/background-1', 'backgrounds/background-2',
-    'backgrounds/background-3', 'backgrounds/background-4',*/
-    
     self.createObject('m0', 'spaceBody', 'missles/missle-blue');
     self.createObject('m1', 'spaceBody', 'missles/missle-green');
     self.createObject('m2', 'spaceBody', 'missles/missle-red');
@@ -89,12 +91,12 @@ StateGame = function(data){
     self.createObject('r2', 'ship', 'ships/red-rocket');
     self.createObject('r3', 'ship', 'ships/yellow-rocket');
     
-    /*self.createObject('sw1', '', 'stars/star-1-w');
-    self.createObject('sw2', '', 'stars/star-2-w');
-    self.createObject('sw3', '', 'stars/star-3-w');
-    self.createObject('sy1', '', 'stars/star-1-y');
-    self.createObject('sy2', '', 'stars/star-2-y');
-    self.createObject('sy3', '', 'stars/star-3-y');*/
+    self.createObject('sw0', 'spaceBody', 'stars/star-1-w');
+    self.createObject('sw1', 'spaceBody', 'stars/star-2-w');
+    self.createObject('sw2', 'spaceBody', 'stars/star-3-w');
+    self.createObject('sy0', 'spaceBody', 'stars/star-1-y');
+    self.createObject('sy1', 'spaceBody', 'stars/star-2-y');
+    self.createObject('sy2', 'spaceBody', 'stars/star-3-y');
     
     // UI update
     if (self.role !== 'spec'){
@@ -173,6 +175,15 @@ StateGame = function(data){
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
         
         // draw background
+        for (var i in self.stars){
+            mat4.fromTranslation(self.tranMatrix, self.stars[i].translation);
+            mat4.rotate(self.tranMatrix, self.tranMatrix, self.stars[i].rotation, [0.0, 0.0, 1.0]);
+            mat4.invert(self.normMatrix, self.tranMatrix);
+            mat4.transpose(self.normMatrix, self.normMatrix);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.1, 0.1, 0.1]);
+            //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
+            self.objs['sw' + self.stars[i].id].draw();
+        }
         
         // draw planets
         for (var i in self.planets){
@@ -194,7 +205,7 @@ StateGame = function(data){
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.players[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.5, 0.5, 0.5]);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.4, 0.4, 0.4]);
             //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
             if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)) self.objs.r1.draw();
             else self.objs.r2.draw();
@@ -229,7 +240,7 @@ StateGame = function(data){
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.bullets[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.2, 0.4, 1.0]);
+            mat4.scale(self.tranMatrix, self.tranMatrix, [0.1, 0.2, 1.0]);
             self.objs['m' + self.bullets[i].id].draw();
         }
     };
