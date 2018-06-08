@@ -80,16 +80,30 @@ socket.on('bannUserResponse', function(data){
 
 var addMessages = function(messages){
     for (i in messages){
+        var added = '';
         if (admin){
-            chatBody.innerHTML +=
-                '<p onclick="banOverlay(\'' + messages[i].sender +
-                    '\');" style="cursor: pointer; display:inline; margin:0;">' + messages[i].sender +
+            added = '<p onclick="banOverlay(\'' + messages[i].sender +
+                '\');" style="cursor: pointer; display:inline; margin:0;';
+            if ((messages[i].sender === roomState.hostName && roomState.role !== 'join') ||
+                (messages[i].sender === roomState.joinName && roomState.role === 'join')) added += ' color:green;';
+            else if ((messages[i].sender === roomState.hostName && roomState.role === 'join') ||
+                (messages[i].sender === roomState.joinName && roomState.role !== 'join')) added += ' color:red;';
+            else added += ' color:cyan;';
+            added += '">' + messages[i].sender +
                 '</p>:  <p style="display:inline; margin:0;">' + messages[i].text +
                 '</p></br>';
         }else{
-            chatBody.innerHTML += '<p style="display:inline; margin:0;">' + messages[i].sender +
-                ':  ' + messages[i].text + '</p></br>';
+            added = '<p style="display:inline; margin:0;';
+            if ((messages[i].sender === roomState.hostName && roomState.role !== 'join') ||
+                (messages[i].sender === roomState.joinName && roomState.role === 'join')) added += ' color:green;';
+            else if ((messages[i].sender === roomState.hostName && roomState.role === 'join') ||
+                (messages[i].sender === roomState.joinName && roomState.role !== 'join')) added += ' color:red;';
+            else added += ' color:cyan;';
+            added += '">' + messages[i].sender +
+                '</p>:  <p style="display:inline; margin:0;">' + messages[i].text +
+                '</p></br>';
         }
+        chatBody.innerHTML += added;
     }
 };
 
