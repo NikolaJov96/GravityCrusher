@@ -129,9 +129,11 @@ module.exports = function(gameRoom){
                 if (self.players[i].roll > 0.5) self.players[i].roll = 0.5;
                 if (i === 0){
                     self.players[i].x += 0.133 * dt;
+                    if (self.players[i].x > X_DISP * 0.8) self.players[i].x = X_DISP * 0.8;
                     self.players[i].y = (self.players[i].x - X_DISP) * TILT_COEF;
                 } else {
                     self.players[i].x -= 0.133 * dt;
+                    if (self.players[i].x < width - X_DISP * 0.8) self.players[i].x = width - X_DISP * 0.8;
                     self.players[i].y = height - (width - self.players[i].x - X_DISP) * TILT_COEF;
                 }
             }
@@ -140,9 +142,11 @@ module.exports = function(gameRoom){
                 if (self.players[i].roll < -0.5) self.players[i].roll = -0.5;
                 if (i === 0){
                     self.players[i].x -= 0.133 * dt;
+                    if (self.players[i].x < 0.04 * width) self.players[i].x = 0.04 * width;
                     self.players[i].y = (self.players[i].x - X_DISP) * TILT_COEF;
                 } else {
                     self.players[i].x += 0.133 * dt;
+                    if (self.players[i].x > width * 0.96) self.players[i].x = width * 0.96;
                     self.players[i].y = height - (width - self.players[i].x - X_DISP) * TILT_COEF;
                 }
             }
