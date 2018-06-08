@@ -3,7 +3,6 @@
 // Summary: Callbacks initialization for 'game' page
 
 var chatBody = document.getElementById('chatBody');
-var chatBtn = document.getElementById('chatBtn');
 var chatText = document.getElementById('chatText');
 var chatDiv = document.getElementById('chatDiv');
 var surrenderBtn = document.getElementById('surrenderBtn');
@@ -17,18 +16,24 @@ var bannBtn4 = document.getElementById('bannBtn4');
 var errorLabel = document.getElementById('errorLabel');
 
 document.onkeydown = function(event){
-    if (roomState && !(chatText === document.activeElement)
-       && !(chatBtn === document.activeElement)) roomState.onKeyDown(event);
+    if (roomState && !(chatText === document.activeElement)) roomState.onKeyDown(event);
 };
 
 document.onkeyup = function(event){
-    if (roomState && !(chatText === document.activeElement)
-       && !(chatBtn === document.activeElement)) roomState.onKeyUp(event);
+    if (roomState && !(chatText === document.activeElement)) roomState.onKeyUp(event);
 };
 
 document.onkeypress = function(event){
-    if (roomState && !(chatText === document.activeElement)
-       && !(chatBtn === document.activeElement)) roomState.onKeyPress(event);
+    if (roomState && !(chatText === document.activeElement)) roomState.onKeyPress(event);
+    
+    if (chatText === document.activeElement && event.key === 'Enter'){
+        if (chatText.value.length > 0){
+            logMsg('Chat message sent: ' + chatText.value);
+            socket.emit('sendMessage', { text: chatText.value });
+            chatText.value = '';
+            chatText.focus();
+        }
+    }
 };
 
 var banOverlay = function(username){
@@ -142,16 +147,6 @@ socket.on('initRoomState', function(data){
 socket.on('gameState', function(data){
     if (roomState) roomState.handleStatePackage(data);
 });
-
-chatBtn.onclick = function(){
-    if (chatText.value.length > 0){
-        logMsg('Chat message sent: ' + chatText.value);
-        socket.emit('sendMessage', { text: chatText.value });
-        chatText.value = '';
-        chatText.focus();
-    }
-    return false;
-};
 
 surrenderBtn.onclick = function(){
     window.location = 'index';
