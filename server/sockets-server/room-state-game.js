@@ -46,7 +46,7 @@ module.exports = function(gameRoom){
                             y: gameRoom.planets[i].PositionY,
                             radius: Math.floor(Math.pow(gameRoom.planets[i].Mass, 1.0 / 3)
                                                     * MASS_TO_V + Math.random() * radiusRandFactor - radiusRandStart),
-                            id : Math.floor(Math.random() * 16)
+                            id : Math.floor(Math.random() * 15)
                         }
         self.planets[i].Mass = gameRoom.planets[i].Mass;
     }
