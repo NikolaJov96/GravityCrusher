@@ -51,8 +51,8 @@ module.exports = function(gameRoom){
 
     for (var i = 0; i < 2; i++){
         self.players[i].x = (i === 0 ? X_DISP * 0.5 : width - X_DISP * 0.5);
-        self.players[i].y = (i === 0 ? 
-                             (self.players[i].x - X_DISP) * TILT_COEF : 
+        self.players[i].y = (i === 0 ?
+                             (self.players[i].x - X_DISP) * TILT_COEF :
                              height - (width - self.players[i].x - X_DISP) * TILT_COEF);
         self.players[i].tilt = TILT_DIFF;
         self.players[i].roll = 0.0;
@@ -119,7 +119,6 @@ module.exports = function(gameRoom){
             if ('rightTilt' in comms[i]) self.players[i].rightTilt = comms[i].rightTilt;
         }
 
-        // TODO: adjust to the new commands, use mesured dt
         for (var i = 0; i < 2; i++){
             if (self.players[i].left){
                 self.players[i].roll += 0.00167 * dt;
@@ -138,7 +137,7 @@ module.exports = function(gameRoom){
                 if (i === 0){
                     self.players[i].x -= 0.133 * dt;
                     self.players[i].y = (self.players[i].x - X_DISP) * TILT_COEF;
-                } else {    
+                } else {
                     self.players[i].x += 0.133 * dt;
                     self.players[i].y = height - (width - self.players[i].x - X_DISP) * TILT_COEF;
                 }
@@ -179,27 +178,6 @@ module.exports = function(gameRoom){
                 }
             }
         }
-        // for (var i = 0; i < 2; i++){
-        //     if (self.players[i].arrLeft){
-        //         self.players[i].roll += 0.015;
-        //         if (self.players[i].roll > 0.5) self.players[i].roll = 0.5;
-        //     }
-        //     if (self.players[i].arrUp) {
-        //         self.players[i].x += 5 * Math.cos(self.players[i].rotation);
-        //         self.players[i].y += 5 * Math.sin(self.players[i].rotation);
-        //     }
-        //     if (self.players[i].arrRight){
-        //         self.players[i].roll -= 0.015;
-        //         if (self.players[i].roll < -0.5) self.players[i].roll = -0.5;
-        //     }
-        //     if (!self.players[i].arrLeft && !self.players[i].arrRight){
-        //         if (self.players[i].roll < 0) self.players[i].roll += 0.015;
-        //         else if (self.players[i].roll > 0) self.players[i].roll -= 0.015;
-        //     }
-        //     self.players[i].rotation =
-        //         (self.players[i].rotation - self.players[i].roll / 10.0 + 2 * Math.PI) % (2 * Math.PI);
-        // }
-        // ENDTODO
 
         //TODO: state update, bullet movement and collision detection between bullets and players,
         // planets, screen boundary or other bullets
