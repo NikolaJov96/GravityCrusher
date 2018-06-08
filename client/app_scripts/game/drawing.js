@@ -22,7 +22,7 @@ var texParams = {
 // width and height of the rendering suface (might differ from the canvas width and height in pixels)
 var screen = { w: canvas.width, h: canvas.height };
 
-gl.clearColor(0.3, 0.3, 0.3, 1.0);
+gl.clearColor(0.05, 0.05, 0.05, 1.0);
 gl.enable(gl.DEPTH_TEST);
 gl.enable(gl.BLEND);
 gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);

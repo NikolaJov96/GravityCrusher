@@ -7,11 +7,11 @@ const height = 600;
 const MASS_TO_V = 0.5; //TODO: change constant
 const radiusRandFactor = 4;
 const radiusRandStart = -2;
-const tiltBarrier = Math.PI * 0.35;
+const tiltBarrier = Math.PI * 0.5;
 const PLAYER_TILT_RADIUS = width / 8.0;
 const BULLET_DISP = 4;
 const MAX_HEALTH = 100;
-const TILT_DIFF = Math.PI / 16.0;
+const TILT_DIFF = Math.PI / 12.0;
 const TILT_COEF = Math.sin(-TILT_DIFF);
 const X_DISP = width * 0.8;
 
@@ -154,7 +154,7 @@ module.exports = function(gameRoom){
             }
             if (self.players[i].rightTilt){
                 self.players[i].tilt -= 0.0013 * dt;
-                if (self.players[i].tilt < -tiltBarrier - TILT_DIFF) self.players[i].tilt = -tiltBarrier - TILT_DIFF;
+                if (self.players[i].tilt < -tiltBarrier + TILT_DIFF) self.players[i].tilt = -tiltBarrier + TILT_DIFF;
             }
 
             if (self.players[i].fire){

@@ -16,10 +16,6 @@ StateGameEnd = function(data){
     self.joinPosition = screen.w * 1.5;
     
     // init ship shape
-    self.createObject('ship', 'ship', 'ship');
-    self.createObject('shipg', 'ship', 'ship-g');
-    self.createObject('shipr', 'ship', 'ship-r');
-    
     self.createObject('darkGreen', 'ship', 'ships/dark-green-rocket');
     self.createObject('darkRed', 'ship', 'ships/dark-red-rocket');
     self.createObject('green', 'ship', 'ships/green-rocket');
