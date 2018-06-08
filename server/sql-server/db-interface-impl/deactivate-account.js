@@ -1,6 +1,6 @@
 // Owner: Filip Mandic 2015/0308 (mandula8)
 
-// Summary: Functions and callbacks for deleting token from table
+// Summary: Functions and callbacks for deactivating account
 
 var queries = require('./queries');
 var updateToken = require('./token-updating-submodule');

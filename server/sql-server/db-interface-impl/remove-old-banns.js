@@ -1,6 +1,6 @@
 // Owner: Filip Mandic 2015/0308 (mandula8)
 
-// Summary: Functions and callbacks for inserting new token by sending username
+// Summary: Functions and callbacks for removing users from ban table when ban is over
 
 var queries = require('./queries');
 
