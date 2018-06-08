@@ -17,8 +17,8 @@ StateGame = function(data){
     for (var i in data.planets){
         var newPlanet = {};
         newPlanet.translation = [
-            (self.role !== 'join' ? screen.w - data.planets[i].x * self.prop.w : data.planets[i].x * self.prop.w), 
-            (self.role !== 'join' ? screen.h - data.planets[i].y * self.prop.h : data.planets[i].y * self.prop.h), 
+            (self.role !== 'join' ? screen.w - data.planets[i].x * self.prop.w : data.planets[i].x * self.prop.w),
+            (self.role !== 'join' ? screen.h - data.planets[i].y * self.prop.h : data.planets[i].y * self.prop.h),
             0.0
         ];
         newPlanet.radius = data.planets[i].radius;
@@ -51,20 +51,20 @@ StateGame = function(data){
             id: Math.floor(Math.random() * 3)
         });
     }
-    
-    self.pressed = [false, false, false, false, false];
+
+    self.pressed = [false, false, false, false, false, false];
     self.surrender = false;
-    
+
     self.createObject('white', 'spaceBody', 'white');
     self.createObject('green', 'spaceBody', 'green');
     self.createObject('red',   'spaceBody', 'red'  );
-    
+
     // add all taxtures
-    self.createObject('m0', 'spaceBody', 'missles/missle-blue');
+    self.createObject('m0', 'spaceBody', 'missles/rocket');
     self.createObject('m1', 'spaceBody', 'missles/missle-green');
     self.createObject('m2', 'spaceBody', 'missles/missle-red');
     self.createObject('m3', 'spaceBody', 'missles/missle-yellow');
-    
+
     self.createObject('p0', 'spaceBody', 'planets/planet-1');
     self.createObject('p1', 'spaceBody', 'planets/planet-2');
     self.createObject('p2', 'spaceBody', 'planets/planet-3');
@@ -81,7 +81,7 @@ StateGame = function(data){
     self.createObject('p13', 'spaceBody', 'planets/planet-14');
     self.createObject('p14', 'spaceBody', 'planets/planet-15');
     self.createObject('p15', 'spaceBody', 'planets/planet-16');
-    
+
     self.createObject('rd0', 'ship', 'ships/dark-blue-rocket');
     self.createObject('rd1', 'ship', 'ships/dark-green-rocket');
     self.createObject('rd2', 'ship', 'ships/dark-red-rocket');
@@ -90,14 +90,14 @@ StateGame = function(data){
     self.createObject('r1', 'ship', 'ships/green-rocket');
     self.createObject('r2', 'ship', 'ships/red-rocket');
     self.createObject('r3', 'ship', 'ships/yellow-rocket');
-    
+
     self.createObject('sw0', 'spaceBody', 'stars/star-1-w');
     self.createObject('sw1', 'spaceBody', 'stars/star-2-w');
     self.createObject('sw2', 'spaceBody', 'stars/star-3-w');
     self.createObject('sy0', 'spaceBody', 'stars/star-1-y');
     self.createObject('sy1', 'spaceBody', 'stars/star-2-y');
     self.createObject('sy2', 'spaceBody', 'stars/star-3-y');
-    
+
     // UI update
     if (self.role !== 'spec'){
         surrenderBtn.innerHTML = 'surrender';
@@ -106,17 +106,17 @@ StateGame = function(data){
             return false;
         };
     }
-    
+
     // init projection and view matrices used throughout this roomState
-    mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0, 
+    mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0,
                screen.h / 2.0, -screen.h / 2.0, 0, 1000);
-    mat4.lookAt(self.viewMatrix, [screen.w / 2.0, screen.h / 2.0, 200], 
+    mat4.lookAt(self.viewMatrix, [screen.w / 2.0, screen.h / 2.0, 200],
                 [screen.w / 2.0, screen.h / 2.0, 0], [0, 1, 0]);
     self.lightSource = new Float32Array([screen.w / 2.0, screen.h / 2.0, 10]);
     self.lightSource[2] = 40.0;
     self.ambientColor = new Float32Array([0.6, 0.6, 0.6]);
     self.directedColor = new Float32Array([0.9, 0.9, 0.9]);
-    
+
     self.handleStatePackage = function(data){
         if (!('hostActive' in data)) attrMissing('hostActive', 'gameState', data);
         else if (!('joinActive' in data)) attrMissing('joinActive', 'gameState', data);
@@ -147,11 +147,11 @@ StateGame = function(data){
                 for (var i in data.bullets){
                     var newBullet = {};
                     newBullet.translation = [
-                        (self.role !== 'join' ? screen.w - data.bullets[i].x * self.prop.w : data.bullets[i].x * self.prop.w), 
-                        (self.role !== 'join' ? screen.h - data.bullets[i].y * self.prop.h : data.bullets[i].y * self.prop.h), 
+                        (self.role !== 'join' ? screen.w - data.bullets[i].x * self.prop.w : data.bullets[i].x * self.prop.w),
+                        (self.role !== 'join' ? screen.h - data.bullets[i].y * self.prop.h : data.bullets[i].y * self.prop.h),
                         0.0
                     ];
-                    newBullet.rotation = 
+                    newBullet.rotation =
                         (self.role !== 'join' ? (data.bullets[i].tilt + Math.PI) % (Math.PI * 2.0) : data.bullets[i].tilt);
                     newBullet.id = data.bullets[i].id;
                     self.bullets.push(newBullet);
@@ -159,7 +159,7 @@ StateGame = function(data){
             }
         }
     };
-    
+
     self.step = function(){
         socket.emit('gameCommand', {
             left: self.pressed[0],
@@ -167,13 +167,14 @@ StateGame = function(data){
             leftTilt: self.pressed[2],
             rightTilt: self.pressed[3],
             fire: self.pressed[4],
+            bomb: self.pressed[5],
             surrender: self.surrender
         });
     };
-    
+
     self.draw = function(){
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-        
+
         // draw background
         for (var i in self.stars){
             mat4.fromTranslation(self.tranMatrix, self.stars[i].translation);
@@ -184,7 +185,7 @@ StateGame = function(data){
             //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
             self.objs['sw' + self.stars[i].id].draw();
         }
-        
+
         // draw planets
         for (var i in self.planets){
             mat4.fromTranslation(self.tranMatrix, self.planets[i].translation);
@@ -209,7 +210,7 @@ StateGame = function(data){
             //mat4.translate(self.tranMatrix, self.tranMatrix, [0, 0, 0]);
             if ((self.role !== 'join' && i === 0) || (self.role === 'join' && i === 1)) self.objs.r1.draw();
             else self.objs.r2.draw();
-            
+
             // draw helath bar
             var barX = screen.w * 0.1;
             var barY = screen.h * 0.05;
@@ -217,14 +218,14 @@ StateGame = function(data){
                 barX = screen.w - barX;
                 barY = screen.h - barY;
             }
-            
+
             // draw background
             mat4.fromTranslation(self.tranMatrix, [barX, barY, 20.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
             mat4.scale(self.tranMatrix, self.tranMatrix, [1.1, 0.22, 1.0]);
             self.objs.white.draw();
-            
+
             // draw foreground
             mat4.fromTranslation(self.tranMatrix, [barX, barY, 21.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
@@ -233,18 +234,23 @@ StateGame = function(data){
             if (self.players[i].health >= 0.3) self.objs.green.draw();
             else self.objs.red.draw();
         }
-        
+
         // draw bullets
         for (var i in self.bullets){
             mat4.fromTranslation(self.tranMatrix, self.bullets[i].translation);
             mat4.rotate(self.tranMatrix, self.tranMatrix, self.bullets[i].rotation, [0.0, 0.0, 1.0]);
             mat4.invert(self.normMatrix, self.tranMatrix);
             mat4.transpose(self.normMatrix, self.normMatrix);
-            mat4.scale(self.tranMatrix, self.tranMatrix, [0.1, 0.2, 1.0]);
+            if (self.bullets[i].id === 0){
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.2, 0.4, 1.0]);
+            }
+            else{
+                mat4.scale(self.tranMatrix, self.tranMatrix, [0.1, 0.2, 1.0]);
+            }
             self.objs['m' + self.bullets[i].id].draw();
         }
     };
-    
+
     // on key down callback
     self.onKeyDown = function(event){
         if (event.key === 'a' && !self.pressed[0]) self.pressed[0] = true;
@@ -252,8 +258,9 @@ StateGame = function(data){
         if (event.key === 'j' && !self.pressed[2]) self.pressed[2] = true;
         if (event.key === 'l' && !self.pressed[3]) self.pressed[3] = true;
         if (event.key === 's' && !self.pressed[4]) self.pressed[4] = true;
+        if (event.key === 'k' && !self.pressed[5]) self.pressed[5] = true;
     };
-    
+
     // on key up callback
     self.onKeyUp = function(event){
         if (event.key === 'a' && self.pressed[0]) self.pressed[0] = false;
@@ -261,13 +268,14 @@ StateGame = function(data){
         if (event.key === 'j' && self.pressed[2]) self.pressed[2] = false;
         if (event.key === 'l' && self.pressed[3]) self.pressed[3] = false;
         if (event.key === 's' && self.pressed[4]) self.pressed[4] = false;
+        if (event.key === 'k' && self.pressed[5]) self.pressed[5] = false;
     };
-    
+
     var superFinish = self.finish;
-    self.finish = function(){ 
+    self.finish = function(){
         logMsg('game state finished');
         superFinish();
     };
-    
+
     return self;
 };
