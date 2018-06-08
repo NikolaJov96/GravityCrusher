@@ -113,18 +113,30 @@ module.exports = {
     updateTokensForUsername: "UPDATE token SET token_valid_date = ? WHERE user_id = ?",
 
     //tables:statistics, user, user_disabled---------------------------------------------------------------------------
+
     //input username
-    selectUsersStatistics: `SELECT games_played_count, games_won_count,
+    selectUsersStatistics: `SELECT u.id, games_played_count, games_won_count,
                                 (games_won_count/GREATEST(games_played_count, 1)) as win_rate
                             FROM user u INNER JOIN statistics s ON u.id = s.user_id
                             WHERE u.username  = ?;`,
 
+    getSortedList :      `SELECT id, user.username, games_won_count, games_played_count,
+                            (games_won_count/GREATEST(games_played_count, 1)) as win_rate
+                          FROM psi.user INNER JOIN psi.statistics ON psi.user.id = psi.statistics.user_id
+                          WHERE NOT EXISTS (SELECT * FROM user_disabled ud WHERE id = ud.user_id)
+                          ORDER BY ?? DESC, ?? DESC, user.username ASC;`,
+
     //input column to check, params
-    getActiveUsersInFrontCount: `SELECT COUNT(*)
+    getActiveUsersInFrontCount: `SELECT u.username
                                  FROM statistics sm INNER JOIN
                                     (SELECT user_id, (games_won_count/GREATEST(games_played_count, 1)) as win_rate
                                     FROM statistics) st ON sm.user_id = st.user_id
-                                 WHERE ?? > ?
+                                    INNER JOIN user u ON st.user_id = u.id
+                                 WHERE (
+                                     (?? > ?)
+                                 OR (?? = ? AND ?? < ?)
+                                 OR (?? = ? AND ?? = ? AND u.username < ?)
+                                 )
                                  AND NOT EXISTS (SELECT * FROM user_disabled ud WHERE ud.user_id = sm.user_id)`,
 
     //without input
@@ -140,7 +152,7 @@ module.exports = {
                         AND NOT EXISTS (SELECT *
                                     FROM user_disabled
                                         WHERE user_disabled.user_id = statistics.user_id)
-                        ORDER BY ?? DESC, ?? DESC
+                        ORDER BY ?? DESC, ?? DESC, user.username ASC
                         LIMIT ?
                         OFFSET ?`,
 

@@ -5,7 +5,90 @@
 var queries = require('./queries');
 
 const RESULT = 0;
-const START_OFFSET = 0;
+
+var sortedListUsersCallback = function(info) { return function(error, rows, fields) {
+        if (!!error) {
+            console.log("error: query which finds users count failed!\n");
+            console.log(error);
+        }
+        else {
+            var i = 0;
+            while( rows[i].id !== info.id) i++;
+            console.log('i: ' + i);
+            var offset = Math.floor(i / info.rowCount);
+            offset = offset * info.rowCount;
+            console.log('offset: ' + offset);
+            console.log('rowCount: ' + info.rowCount);
+            console.log("------------");
+            var i = offset;
+            var outputResult = [];
+            var j = 0;
+            while((i < rows.length) && (j < info.rowCount)) {
+                outputResult[j] = {
+                    'Rank': i + 1,
+                    'Username':  rows[i].username,
+                    'Games Played': rows[i].games_played_count,
+                    'Games Won': rows[i].games_won_count,
+                    'Games Won Percentage': (rows[i].games_played_count != 0) ?
+                        (rows[i].games_won_count / rows[i].games_played_count * 100) : (0),
+                }
+                i++;
+                j++;
+            }
+
+            if (info.callback) info.callback("Success", outputResult, rows.length);
+        }
+}}
+
+var selectCallbackQuery = function(info) { return function(error, rows, fields) {
+        if (!!error) {
+            console.log("error: query which search for users statistics failed!\n");
+            console.log(error);
+        }
+        else {
+            if (!!rows.length) {
+                info.columnValueFirst = rows[0][info.metric];
+                info.columnValueSecond = rows[0][info.secondMetric];
+                info.id = rows[0]['id'];
+
+                // console.log(rows[0]);
+                // console.log(info.metric);
+                // console.log(info.secondMetric);
+                // console.log(info.columnValueFirst);
+                // console.log(info.columnValueSecond);
+                // console.log(info.id);
+
+                info.connection.query(queries.getSortedList,
+                    [info.metric, info.secondMetric], sortedListUsersCallback(info));
+            }
+            else if (info.callback) info.callback("InvalidUser", null, null);
+        }
+}}
+
+var getStatisticsModule = function(connection, metric, rowCount, username, statNamesToColumns, callback) {
+
+    if (! metric in statNamesToColumns) return;
+
+    var secondMetric = "Games Won Percentage";
+    var otherMemMetric = "Games Played";
+    if (metric === "Games Won Percentage") secondMetric = "Games Played";
+    info = {
+        connection : connection,
+        metric : statNamesToColumns[metric],
+        secondMetric: statNamesToColumns[secondMetric],
+        rowCount : rowCount,
+        username : username,
+        callback : callback
+    }
+
+    info.connection.query(queries.selectUsersStatistics, [info.username], selectCallbackQuery(info));
+}
+
+module.exports = getStatisticsModule;
+
+/*
+info.offset = Math.floor((info.activeUsersCount + 1) / 10);
+info.offset *= 10;
 
 var callbackTableToPass = function(info) { return function(error, rows, fields) {
         if (!!error) {
@@ -14,10 +97,11 @@ var callbackTableToPass = function(info) { return function(error, rows, fields) 
         }
         else {
 
+            var j = info.offset + 1;
             var outputResult = [];
             for(var i in rows) {
                 outputResult[i] = {
-                    'Rank': rows[i].row,
+                    'Rank': j++,
                     'Username':  rows[i].username,
                     'Games Played': rows[i].games_played_count,
                     'Games Won': rows[i].games_won_count,
@@ -26,9 +110,7 @@ var callbackTableToPass = function(info) { return function(error, rows, fields) 
                 }
             }
 
-            var maxRow = rows[rows.length - 1].row - rows[0].row + 1;
-
-            if (info.callback) info.callback("Success", outputResult, maxRow);
+            if (info.callback) info.callback("Success", outputResult, info.activeUsersCount);
         }
 }}
 
@@ -48,6 +130,7 @@ var callbackFront = function(info) { return function(error, rows, fields) {
                 offset = info.frontUsersCount - half;
             else if (info.backUsersCount <= half)
                     offset = info.frontUsersCount - info.rowCount + info.backUsersCount + 1;
+            info.offset = offset;
 
             info.connection.query(queries.selectStatistics,
                 [offset, info.metric, info.secondMetric, info.rowCount, offset], callbackTableToPass(info));
@@ -110,3 +193,4 @@ var getStatisticsModule = function(connection, metric, rowCount, username, statN
 }
 
 module.exports = getStatisticsModule;
+*/

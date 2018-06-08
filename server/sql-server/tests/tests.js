@@ -33,7 +33,7 @@ tests = {
                          callbackTest('EmailTaken'));
         db.createNewUser('MacOsmail@dd', 'Andrija', '454544545455', '848484848484', '5456166161542',
                          callbackTest('UsernameTaken'));
-        db.createNewUser('filipmandic26@gmail.com', 'Janko', '156164231515510', '54561661616161', '5656116151161',
+        db.createNewUser('janko6@gmail.com', 'Janko', '156164231515510', '54561661616161', '5656116151161',
                          callbackTest('Success'));
     },
     getSaltUsername: function(){
@@ -162,7 +162,7 @@ tests = {
         ]
 
         db.getSaltByEmail('Dragana6@gmail.com', callbackTest('UserNotRegistered'));
-        db.getSaltByEmail('Nikola7@gmail.com', callbackTest('UserNotRegistered'));
+        db.getSaltByEmail('Perica6@gmail.com', callbackTest('UserNotRegistered'));
         db.getSaltByEmail('Marko6@gmail.com', callbackTest('Success'));
     },
     verifyWithUsername: function(){
@@ -191,7 +191,7 @@ tests = {
         db.verifyUserByUsername('jovan', 'dcdcdcdccdc4dc45d564', callbackTest('UserBanned'));
         db.verifyUserByUsername('Nikola', '32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25',
             callbackTest('Success'));
-        db.verifyUserByUsername('Andrija', '32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25',
+        db.verifyUserByUsername('Nemanja', '32f5481ff3e97ac727154adf90e7a90acce61ec07a4d8b6d5831b8597acad9c3ed899de42df6953387b3ae24474527ef62ee168b63528624489eeb7556776c25',
                 callbackTest('Success'));
     },
     verifyWithEmail: function(){
@@ -467,51 +467,58 @@ tests = {
             };
         };
 
-        var data1 = {
-            mode: 'user',
-            username: 'Jelena'
-        }
+        db.getStatisticsForUser('Games Won', 10, "Emilija", callbackTest('Success', 'Games Won'));
+        db.getStatisticsForUser('Games Won', 10, "Petar", callbackTest('Success', 'Games Won'));
+        db.getStatisticsForUser('Games Won', 10, "Jelica", callbackTest('Success', 'Games Won'));
+        db.getStatisticsForUser('Games Won', 10, "Ana", callbackTest('Success', 'Games Won'));
+        db.getStatisticsForUser('Games Won', 10, "Miroslav", callbackTest('Success', 'Games Won'));
+        db.getStatisticsForUser('Games Won', 10, "Andjela", callbackTest('Success', 'Games Won'));
 
-        var data2 = {
-            mode: 'user',
-            username: 'Nemanja'
-        }
-
-        var data3 = {
-            mode: 'user',
-            username: 'Nikola'
-        }
-
-        var data4 = {
-            mode: 'position',
-            start: -2
-        }
-
-        var data5 = {
-            mode: 'position',
-            start: 3
-        }
-
-        var data6 = {
-            mode: 'position',
-            start: 12
-        }
-
-
-        var test_ulazi = [
-            ['games_played_count', 10, data1],
-            ['games_won_count', 10, data2],
-            ['games_won_count', 10, data3]
-        ]
-        db.getStatisticsForUser('Games Won Percentage', 1, data1.username,
-            callbackTest('Success', 'Games Won Percentage'));
-        db.getStatisticsForUser('Games Won', 2, data2.username, callbackTest('Success', 'Games Won'));
-        db.getStatisticsForUser('Games Won', 3, data3.username, callbackTest('Success', 'Games Won'));
-
-        db.getStatisticsForPosition('Games Won Percentage', 4, data4.start,
-            callbackTest('Success', 'Games Won Percentage'));
-        db.getStatisticsForPosition('Games Played', 5, data5.start, callbackTest('Success', 'Games Played'));
-        db.getStatisticsForPosition('Games Won', 5, data6.start, callbackTest('Success', 'Games Won'));
+        // var data1 = {
+        //     mode: 'user',
+        //     username: 'Jelena'
+        // }
+        //
+        // var data2 = {
+        //     mode: 'user',
+        //     username: 'Nemanja'
+        // }
+        //
+        // var data3 = {
+        //     mode: 'user',
+        //     username: 'Nikola'
+        // }
+        //
+        // var data4 = {
+        //     mode: 'position',
+        //     start: -2
+        // }
+        //
+        // var data5 = {
+        //     mode: 'position',
+        //     start: 3
+        // }
+        //
+        // var data6 = {
+        //     mode: 'position',
+        //     start: 12
+        // }
+        //
+        //
+        // var test_ulazi = [
+        //     ['games_played_count', 10, data1],
+        //     ['games_won_count', 10, data2],
+        //     ['games_won_count', 10, data3]
+        // ]
+        // db.getStatisticsForUser('Games Won Percentage', 1, data1.username,
+        //     callbackTest('Success', 'Games Won Percentage'));
+        // db.getStatisticsForUser('Games Won', 2, data2.username, callbackTest('Success', 'Games Won'));
+        // db.getStatisticsForUser('Games Won', 3, data3.username, callbackTest('Success', 'Games Won'));
+        //
+        // db.getStatisticsForPosition('Games Won Percentage', 4, data4.start,
+        //     callbackTest('Success', 'Games Won Percentage'));
+        // db.getStatisticsForPosition('Games Played', 5, data5.start, callbackTest('Success', 'Games Played'));
+        // db.getStatisticsForPosition('Games Won', 5, data6.start, callbackTest('Success', 'Games Won'));
     },
     bannUser: function() {
         var fun = 'bann user';

@@ -14,10 +14,11 @@ var callbackTableToPass = function(info) { return function(error, rows, fields) 
         }
         else {
 
+            var j = info.start + 1;
             var outputResult = [];
             for(var i in rows) {
                 outputResult[i] = {
-                    'Rank': rows[i].row,
+                    'Rank': j++,
                     'Username': rows[i].username,
                     'Games Played': rows[i].games_played_count,
                     'Games Won': rows[i].games_won_count,
@@ -27,9 +28,7 @@ var callbackTableToPass = function(info) { return function(error, rows, fields) 
 
             }
 
-            var maxRow = rows[rows.length - 1].row - rows[0].row + 1;
-
-            if (info.callback) info.callback("Success", outputResult, maxRow);
+            if (info.callback) info.callback("Success", outputResult, info.activeUsersCount);
         }
 }}
 
