@@ -15,7 +15,7 @@ var callbackQuery = function(info) { return function(error, rows, fields) {
         else if (info.callback) info.callback("Success");
 }}
 
-var selectingGameMapsModule = function(connection, callback) {
+var removeNotConfirmedModule = function(connection, callback) {
 
     info = {
         connection : connection,
@@ -28,4 +28,4 @@ var selectingGameMapsModule = function(connection, callback) {
     info.connection.query(queries.deleteOldUnfinishedRegistrations, [date], callbackQuery(info));
 }
 
-module.exports = selectingGameMapsModule;
+module.exports = removeNotConfirmedModule;
