@@ -31,6 +31,11 @@ StateGameEnd = function(data){
     if (self.winner === ''){
         middle.style.color = 'white';
         middle.innerHTML = 'TIE';
+    }else if (self.role === 'spec'){
+        middle.style.color = 'white';
+        if (self.winner === 'host') middle.innerHTML = '<-';
+        else if (self.winner === 'join') middle.innerHTML = '->';
+        else middle.innerHTML = '==';
     }else if (self.winner === self.role){
         middle.style.color = 'green';
         middle.innerHTML = 'WIN';

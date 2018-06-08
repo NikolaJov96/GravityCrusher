@@ -33,7 +33,7 @@ StateLoading = function(data){
         };
     }
     pl1.innerHTML = self.hostName;
-    pl2.innerHTML = self.joinName;
+    pl2.innerHTML = '?';
     middle.innerHTML = 'VS';
     if (self.role !== 'join'){
         pl1.style.color = 'green';
@@ -60,10 +60,12 @@ StateLoading = function(data){
         else if (!('joinActive' in data)) attrMissing('joinActive', 'gameState', data);
         else if (!('joinReady' in data)) attrMissing('joinReady', 'gameState', data);
         else{
+            logMsg(data);
             self.hostActive = data.hostActive;
             self.hostReady = data.hostReady;
             self.joinActive = data.joinActive;
             self.joinReady = data.joinReady;
+            self.joinName = data.join;
             self.counter = data.counter;
             
             if (self.joinActive && self.role !== 'spec'){
@@ -88,6 +90,8 @@ StateLoading = function(data){
         }else{
             if (self.joinPosition < screen.w * 1.25) self.joinPosition += screen.w * 0.04;
         }
+        
+        if (self.joinActive) pl2.innerHTML = self.joinName;
     };
     
     self.draw = function(){

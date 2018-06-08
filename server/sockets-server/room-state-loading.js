@@ -54,6 +54,7 @@ module.exports = function(gameRoom){
             hostActive: ((self.room.host && self.room.host.page === 'Game') ? true : false),
             joinReady: self.joinReady,
             joinActive: ((self.room.join && self.room.join.page === 'Game') ? true : false),
+            join: self.room.joinName,
             counter: self.counter * serverState.frameTime / 1000
         };
         if (self.room.host.socket && self.room.host.page === 'Game'){
