@@ -43,8 +43,8 @@ var selectCallbackQuery = function(info) { return function(error, rows, fields) 
             if(info.start <= 0 || info.activeUsersCount <= info.rowCount) info.start = 0;
             else info.start--;
 
-            if ((info.start > info.activeUsersCount - info.rowCount) && (info.activeUsersCount > info.rowCount))
-                    info.start = info.activeUsersCount - info.rowCount;
+            //if ((info.start > info.activeUsersCount - info.rowCount) && (info.activeUsersCount > info.rowCount))
+            //        info.start = info.activeUsersCount - info.rowCount;
 
             info.connection.query(queries.selectStatistics,
                 [info.start, info.metric, info.secondMetric, info.rowCount, info.start], callbackTableToPass(info));

@@ -14,12 +14,8 @@ var sortedListUsersCallback = function(info) { return function(error, rows, fiel
         else {
             var i = 0;
             while( rows[i].id !== info.id) i++;
-            console.log('i: ' + i);
             var offset = Math.floor(i / info.rowCount);
             offset = offset * info.rowCount;
-            console.log('offset: ' + offset);
-            console.log('rowCount: ' + info.rowCount);
-            console.log("------------");
             var i = offset;
             var outputResult = [];
             var j = 0;
