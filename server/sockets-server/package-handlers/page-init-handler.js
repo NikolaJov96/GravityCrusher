@@ -101,6 +101,10 @@ module.exports = function(socket){ return function(data) {
                     socket.emit('pageInitResponse', response);
                 });
             return;
+        } else if (data.page === 'MyProfile'){
+            if (!response.signedIn){
+                response.payload = { 'redirect': true };
+            }
         }
         socket.emit('pageInitResponse', response);
     };
