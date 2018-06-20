@@ -27,6 +27,13 @@ module.exports = function(name, host, gamePublic, joinName, map, roomPublic, cha
 
     self.step = function(){
         var ret = self.state.step();
+        
+        if (ret.action === 'rematch'){
+            ret.action = 'nextState';
+            ret.nextState = RoomStateLoading;
+            self.winner = '';
+        }
+        
         if (ret.action === 'nextState'){
             self.state = ret.nextState(self);
             if (self.host.socket && self.host.page === 'Game')

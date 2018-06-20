@@ -4,7 +4,9 @@
 
 module.exports = function(gameRoom){
     var self = {
-        room: gameRoom
+        room: gameRoom,
+        hostRematch: false,
+        joinRematch: false
     };
 
     logMsg('Room ' + self.room.name + ' is in game-end state.');
@@ -30,12 +32,22 @@ module.exports = function(gameRoom){
     self.step = function(){
         var ret = { action: null };
         
+        if (self.room.hostCommand){
+            var comm = self.room.hostCommand;
+            if ('rematch' in comm) self.hostRematch = comm.rematch;
+        }
+        if (self.room.joinCommand){
+            var comm = self.room.joinCommand;
+            if ('rematch' in comm) self.joinRematch = comm.rematch;
+        }
+        
         if (self.room.host && self.room.host.page !== 'Game') self.room.host = null;
         if (self.room.join && self.room.join.page !== 'Game') self.room.join = null;
         
         var gameState = {
             hostActive: ((self.room.host && self.room.host.page === 'Game') ? true : false),
-            joinActive: ((self.room.join && self.room.join.page === 'Game') ? true : false)
+            joinActive: ((self.room.join && self.room.join.page === 'Game') ? true : false),
+            rematch: self.hostRematch || self.joinRematch
         };
         if (self.room.host && self.room.host.socket && self.room.host.page === 'Game'){
             self.room.host.socket.emit('gameState', gameState);
@@ -49,7 +61,10 @@ module.exports = function(gameRoom){
             }
         }
         
-        if (!self.room.host && !self.room.join){
+        if (self.hostRematch && self.joinRematch){
+            ret.action = 'rematch';
+            logMsg('Room ' + self.room.name + ' is in for a rematch.');
+        } else if (!self.room.host && !self.room.join){
             ret.action = 'gameFinished';
             for (i in self.room.spectators){
                 if (self.room.spectators[i].socket && self.room.spectators[i].page === 'Game'){

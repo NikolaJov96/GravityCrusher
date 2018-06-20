@@ -6,6 +6,7 @@ var chatBody = document.getElementById('chatBody');
 var chatText = document.getElementById('chatText');
 var chatDiv = document.getElementById('chatDiv');
 var surrenderBtn = document.getElementById('surrenderBtn');
+var rematchBtn = document.getElementById('rematchBtn');
 
 var ban_overlay = document.getElementById('ban-overlay');
 var banUsername = document.getElementById('banUsername');

@@ -14,6 +14,7 @@ StateGameEnd = function(data){
     self.winner = data.winner;
     self.hostPosition = -screen.w * 0.5;
     self.joinPosition = screen.w * 1.5;
+    self.rematch = false;
     
     // init ship shape
     self.createObject('darkGreen', 'ship', 'ships/dark-green-rocket');
@@ -25,6 +26,9 @@ StateGameEnd = function(data){
     surrenderBtn.innerHTML = 'Return to home';
     surrenderBtn.onclick = function(){
         window.location = 'index';
+    };
+    rematchBtn.onclick = function(){
+        self.rematch = !self.rematch;
     };
     pl1.innerHTML = self.hostName;
     pl2.innerHTML = self.joinName;
@@ -51,6 +55,7 @@ StateGameEnd = function(data){
         pl1.style.color = 'red';
         pl2.style.color = 'green';
     }
+    rematchBtn.classList.remove("d-none");
     
     // init projection and view matrices used throughout this roomState
     mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0, 
@@ -66,15 +71,24 @@ StateGameEnd = function(data){
             
         else if (!('hostActive' in data)) attrMissing('hostActive', 'gameState', data);
         else if (!('joinActive' in data)) attrMissing('joinActive', 'gameState', data);
+        else if (!('rematch' in data)) attrMissing('rematch', 'gameState', data);
         else{
             self.hostActive = data.hostActive;
             self.joinActive = data.joinActive;
+            if (data.rematch){
+                rematchBtn.classList.remove("btn-danger");
+                rematchBtn.classList.add("btn-success");
+            }else{
+                rematchBtn.classList.remove("btn-success");
+                rematchBtn.classList.add("btn-danger");
+            }
         }
     };
     
     self.step = function(){  
         if (self.hostPosition < screen.w * 0.33) self.hostPosition += screen.w * 0.03;
         if (self.joinPosition > screen.w * 0.66) self.joinPosition -= screen.w * 0.03;
+        socket.emit('gameCommand', {rematch: self.rematch})
     };
     
     self.draw = function(){

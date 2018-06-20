@@ -127,6 +127,7 @@ StateGame = function(data){
         pl2.style.color = 'green';
     }
     middle.style.color = 'white';
+    rematchBtn.classList.add("d-none");
 
     // init projection and view matrices used throughout this roomState
     mat4.ortho(self.projMatrix, -screen.w / 2.0, screen.w / 2.0,
