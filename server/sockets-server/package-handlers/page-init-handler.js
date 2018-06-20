@@ -32,7 +32,7 @@ module.exports = function(socket){ return function(data) {
     var genPayload = function(data, user, response){
         if (data.page === 'Game'){
             response.payload = { redirect: true };
-            for (var i in serverState.gameRooms){
+            for (var i = serverState.gameRooms.length - 1; i >= 0; i--){
                 if (serverState.gameRooms[i].containsUserBind(user)){
                     if (serverState.gameRooms[i].joinName === user.name) serverState.gameRooms[i].join = user;
                     else if (serverState.gameRooms[i].hostName === user.name) serverState.gameRooms[i].host = user;
