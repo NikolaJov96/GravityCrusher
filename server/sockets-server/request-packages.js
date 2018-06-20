@@ -62,6 +62,10 @@ requestPackages = [
     {
         id:'changeAvatar',
         file:'./package-handlers/change-avatar-handler.js'
+    },
+    {
+        id:'randomGame',
+        file:'./package-handlers/random-game-handler.js'
     }
 ];
 
