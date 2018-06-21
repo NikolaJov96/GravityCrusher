@@ -94,9 +94,12 @@
                     <h1 class="title">Begin your space adventure!</h1>
                     <h4>Compete with other players!</h4>
                     <br>
-                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="btn btn-danger btn-raised btn-lg" style="margin-bottom: 10%">
-                        <i class="fa fa-play"></i> Watch video
-                    </a>
+                    <button id="randomGame" class="btn btn-danger btn-raised btn-lg" style="margin-bottom: 10%">
+                        Join random game!
+                    </button>
+                    <h4 id="newRoom" class="d-none">
+                        <a href="create-room" style="color: white;">There are no open rooms, create one!</a>
+                    </h4>
                 </div>
             </div>
         </div>
@@ -230,6 +233,7 @@
         </div>
     </footer>
     <script src="app_scripts/universal.js"></script>
+    <script src="app_scripts/index.js"></script>
     <!--   Core JS Files   -->
     <script src="../assets/js/core/jquery.min.js"></script>
     <script src="../assets/js/core/popper.min.js"></script>
