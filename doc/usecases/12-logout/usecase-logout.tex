@@ -1,0 +1,54 @@
+\documentclass[a4paper,12pt,titlepage]{article}
+
+% input/output encoding packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1,T2A]{fontenc} % T2A for russian
+\usepackage[russian]{babel} % must be loaded after previous two packages
+
+% other packages
+\usepackage{fancyhdr}
+\usepackage{tabu}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+% renewed commands
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{1pt}
+\renewcommand{\familydefault}{\sfdefault}
+
+\addto\captionsrussian{
+  \renewcommand{\contentsname}
+    {Садржај}
+  \renewcommand{\tablename}
+    {Табела}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\begin{document}
+
+	% Title page
+	\input{titlepage}
+	
+	\rhead{\nouppercase{\leftmark}}
+	\rfoot{\thepage}
+	\pagenumbering{roman}
+	
+	% Version revision page.
+	\input{versiontable}
+	
+	% Contents page.
+	\tableofcontents
+	\newpage
+	
+	% Content pages.
+	\pagenumbering{arabic}
+	\rfoot{Страна \thepage}
+	\frenchspacing
+	\input{content}
+	
+
+\end{document}
+
