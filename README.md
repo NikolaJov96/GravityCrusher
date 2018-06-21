@@ -60,6 +60,12 @@ directory tree can be found in the `examples` directory.
 node app
 ```
 
+## Running the server on a specific Internet address
+Modify the following files:
+ * `./app-config.js` -- modify the `domainName` field
+ * `./client/app_scripts/init-connection.js` -- initialize the `socket` global variable
+   with appropriate address
+
 ## Documentation
 All available documentation (description, use cases, data model etc) can be found
 under the `doc` directory tree.
