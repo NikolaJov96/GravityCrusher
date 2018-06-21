@@ -3,6 +3,11 @@
 // Summary: function hadling chat messages inside the rooms
 
 module.exports = function(socket){ return function(data){
+    data.text = data.text.replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     logMsg('Send message req: Text: ' + data.text);
     socket.user.interaction = true;
     if (socket.user.isGuest) return;
