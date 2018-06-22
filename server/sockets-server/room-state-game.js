@@ -4,7 +4,7 @@
 
 const width = 800;
 const height = 600;
-const MASS_TO_V = 0.5; //TODO: change constant
+const MASS_TO_V = 1.3;
 const radiusRandFactor = 4;
 const radiusRandStart = -2;
 const tiltBarrier = Math.PI * 0.5;
@@ -44,12 +44,12 @@ module.exports = function(gameRoom){
     };
 
     for (var i in gameRoom.planets) {
-        self.planets[i] = { 
+        self.planets[i] = {
             x: gameRoom.planets[i].PositionX,
             y: gameRoom.planets[i].PositionY,
             radius: Math.floor(
-                Math.pow(gameRoom.planets[i].Mass, 1.0 / 3) * 
-                MASS_TO_V + Math.random() * radiusRandFactor - radiusRandStart) * width / 80.0,
+                Math.pow(gameRoom.planets[i].Mass, 1.0 / 3) *
+                MASS_TO_V) * width / 80.0,
             id : Math.floor(Math.random() * 15)
         }
         self.planets[i].Mass = gameRoom.planets[i].Mass;
@@ -114,7 +114,7 @@ module.exports = function(gameRoom){
         var currentTime = new Date().getTime();
         var dt = currentTime - self.time;
         self.time = currentTime;
-        
+
         self.gameTimer -= dt;
         if (self.gameTimer < 0.0) self.gameEnd = true;
 
@@ -269,7 +269,7 @@ module.exports = function(gameRoom){
             var doContinue = false;
             while(j--) {
                 if (collisionCircle(self.bullets[i], self.planets[j])) {
-                    self.effects.push({ 
+                    self.effects.push({
                         x: self.bullets[i].x, y: self.bullets[i].y, tilt: Math.random() * Math.PI * 2.0, timeout: 200
                     });
                     self.bullets.splice(i, 1);
@@ -282,7 +282,7 @@ module.exports = function(gameRoom){
             j = self.bullets.length;
             while(j--) {
                 if ((i !== j) && (collisionCircle(self.bullets[i], self.bullets[j]))) {
-                    self.effects.push({ 
+                    self.effects.push({
                         x: self.bullets[i].x, y: self.bullets[i].y, tilt: Math.random() * Math.PI * 2.0, timeout: 200
                     });
                     self.bullets.splice(i, 1);
@@ -292,7 +292,7 @@ module.exports = function(gameRoom){
                 }
             }
         }
-        
+
         i = self.effects.length;
         while(i--) {
             self.effects[i].timeout -= dt;
@@ -318,7 +318,7 @@ module.exports = function(gameRoom){
             ],
             bullets: self.bullets,
             effects: self.effects.map(e => { return {
-                x: e.x, y: e.y, tilt: e.tilt, radius: e.timeout / 1000.0 * width / 400.0 
+                x: e.x, y: e.y, tilt: e.tilt, radius: e.timeout / 1000.0 * width / 400.0
             };})
         };
         if (self.room.host.socket && self.room.host.page === 'Game'){
