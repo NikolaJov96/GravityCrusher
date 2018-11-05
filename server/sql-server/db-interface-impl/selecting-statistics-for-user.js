@@ -47,13 +47,6 @@ var selectCallbackQuery = function(info) { return function(error, rows, fields) 
                 info.columnValueSecond = rows[0][info.secondMetric];
                 info.id = rows[0]['id'];
 
-                // console.log(rows[0]);
-                // console.log(info.metric);
-                // console.log(info.secondMetric);
-                // console.log(info.columnValueFirst);
-                // console.log(info.columnValueSecond);
-                // console.log(info.id);
-
                 info.connection.query(queries.getSortedList,
                     [info.metric, info.secondMetric], sortedListUsersCallback(info));
             }
