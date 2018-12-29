@@ -7,7 +7,7 @@ var db = require('./../database-interface');
 /**
 * in this file are same test samples for testing db through db interface
 * tests are good but should not be run all at once because same depend on same data(should be changed in next version)
-* 
+*
 */
 tests = {
     insertUser: function(){
@@ -477,52 +477,6 @@ tests = {
         db.getStatisticsForUser('Games Won', 10, "Ana", callbackTest('Success', 'Games Won'));
         db.getStatisticsForUser('Games Won', 10, "Miroslav", callbackTest('Success', 'Games Won'));
         db.getStatisticsForUser('Games Won', 10, "Andjela", callbackTest('Success', 'Games Won'));
-
-        // var data1 = {
-        //     mode: 'user',
-        //     username: 'Jelena'
-        // }
-        //
-        // var data2 = {
-        //     mode: 'user',
-        //     username: 'Nemanja'
-        // }
-        //
-        // var data3 = {
-        //     mode: 'user',
-        //     username: 'Nikola'
-        // }
-        //
-        // var data4 = {
-        //     mode: 'position',
-        //     start: -2
-        // }
-        //
-        // var data5 = {
-        //     mode: 'position',
-        //     start: 3
-        // }
-        //
-        // var data6 = {
-        //     mode: 'position',
-        //     start: 12
-        // }
-        //
-        //
-        // var test_ulazi = [
-        //     ['games_played_count', 10, data1],
-        //     ['games_won_count', 10, data2],
-        //     ['games_won_count', 10, data3]
-        // ]
-        // db.getStatisticsForUser('Games Won Percentage', 1, data1.username,
-        //     callbackTest('Success', 'Games Won Percentage'));
-        // db.getStatisticsForUser('Games Won', 2, data2.username, callbackTest('Success', 'Games Won'));
-        // db.getStatisticsForUser('Games Won', 3, data3.username, callbackTest('Success', 'Games Won'));
-        //
-        // db.getStatisticsForPosition('Games Won Percentage', 4, data4.start,
-        //     callbackTest('Success', 'Games Won Percentage'));
-        // db.getStatisticsForPosition('Games Played', 5, data5.start, callbackTest('Success', 'Games Played'));
-        // db.getStatisticsForPosition('Games Won', 5, data6.start, callbackTest('Success', 'Games Won'));
     },
     bannUser: function() {
         var fun = 'bann user';
@@ -731,7 +685,7 @@ tests = {
 //tests.resetPasswordTest();
 //tests.deactivateAccountTest();
 //tests.checkUsername();
-tests.selectingStatistics();
+//tests.selectingStatistics();
 //tests.bannUser();
 //tests.insertStatistics();
 //tests.removeOldBannsTest();

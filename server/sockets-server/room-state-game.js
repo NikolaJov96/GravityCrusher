@@ -364,7 +364,7 @@ module.exports = function(gameRoom){
 
         if (ret.action === 'nextState'){
             ret.nextState = RoomStateGameEnd;
-            self.room.roomPublic = false;
+            //self.room.roomPublic = false;
             for (var user in serverState.users){
                 if (serverState.users[user].socket && serverState.users[user].page === 'GameRooms'){
                     serverState.users[user].socket.emit('gameRoomsUpdate', {
